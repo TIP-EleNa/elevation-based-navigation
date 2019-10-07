@@ -1,6 +1,6 @@
-import React, { Component } from "react";
-import { withLeaflet } from "react-leaflet";
-import Locate from "leaflet.locatecontrol";
+import React, { Component } from 'react';
+import { withLeaflet } from 'react-leaflet';
+import Locate from 'leaflet.locatecontrol';
 
 class LocateControl extends Component {
   componentDidMount() {

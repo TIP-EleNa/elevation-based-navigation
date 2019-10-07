@@ -2,11 +2,12 @@ import React, { Component } from 'react';
 import { Map as LeafletMap, TileLayer, Marker, Popup, GeoJSON } from 'react-leaflet';
 
 import LocateControl from './LocateControl'; 
+import RoutingControl from './RoutingControl'; 
  
 const locateOptions = {
   position: 'topright',
   strings: {
-      title: 'Show me where I am, yo!'
+      title: ''
   },
   onActivate: () => {} // callback before engine starts retrieving locations
 }
@@ -15,7 +16,6 @@ class Map extends Component {
   render() {
     return (
       <LeafletMap
-        center={[37, -122]}
         zoom={15}
         maxZoom={15}
         attributionControl={true}
@@ -36,6 +36,7 @@ class Map extends Component {
         </Marker>
         <GeoJSON data={getGeoJson()} style={() => ({color: 'green'})} />
         <LocateControl options={locateOptions} startDirectly/>
+        <RoutingControl from={[57.74, 11.94]} to={[57.6792, 11.949]} />
       </LeafletMap>
     );
   }
