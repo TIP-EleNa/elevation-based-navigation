@@ -3,6 +3,7 @@ import { Map as LeafletMap, TileLayer, Marker, Popup, GeoJSON } from 'react-leaf
 
 import LocateControl from './LocateControl'; 
 import RoutingControl from './RoutingControl'; 
+import Search from './Search/Search'
  
 const locateOptions = {
   position: 'topright',
@@ -31,6 +32,7 @@ class Map extends Component {
         />
         <LocateControl options={locateOptions} startDirectly/>
         <RoutingControl from={[57.74, 11.94]} to={[57.6792, 11.949]} />
+        <Search />
       </LeafletMap>
     );
   }
