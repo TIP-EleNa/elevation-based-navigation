@@ -4,10 +4,11 @@ import Locate from 'leaflet.locatecontrol';
 
 class LocateControl extends Component {
   componentDidMount() {
-    const { options, startDirectly } = this.props;
+    const { options, onLocationFound, startDirectly } = this.props;
     const { map } = this.props.leaflet;
-
     const locate = new Locate(options);
+
+    map.on('locationfound', onLocationFound); 
     locate.addTo(map);
 
     if (startDirectly) {
