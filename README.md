@@ -11,14 +11,14 @@ Please install them before you proceed. I recommend using `brew` to install them
 
 ```
 # open termianl
-$ brew update
+brew update
 
 # install node.js and npm
-$ brew install node
+brew install node
 
 # test if the installation succeed and versions
-$ node -v
-$ npm -v
+node -v
+npm -v
 ```
 
 ### Installing
@@ -27,18 +27,18 @@ Clone and direct to the repo you just cloned or downloaded.
 
 ```
 # with ssh
-$ git clone git@github.com:TIP-EleNa/elevation-based-navigation.git
+git clone git@github.com:TIP-EleNa/elevation-based-navigation.git
 
 # with http
-$ git clone https://github.com/TIP-EleNa/elevation-based-navigation.git
+git clone https://github.com/TIP-EleNa/elevation-based-navigation.git
 
-$ cd elevation-based-navigation
+cd elevation-based-navigation
 ```
 
 Install all dependencies. See `package.json` for more information. 
 
 ```
-$ npm install
+npm install
 ```
 
 Runs the app in the development mode.<br />
@@ -48,7 +48,7 @@ The page will reload if you make edits.<br />
 You will also see any lint errors in the console.
 
 ```
-$ npm run start
+npm run start
 ```
 
 
@@ -59,31 +59,34 @@ The app is currently deployed to [Heroku](http://heroku.com). You need to have a
 Intall `Heroku CLI`. 
 
 ```
-$ npm install -g heroku
+npm install -g heroku
 ```
 
 Verifying your installation
 
 ```
-$ heroku -v
+heroku -v
+```
+
+Make sure you don't have any uncommitted changes
+
+```
+git status
 ```
 
 Create heroku git repository
 
 ```
-# make sure you don't have any uncommitted changes
-$ git status
-
-$ heroku login [your Heroku credentials]
-$ heroku create [copy the second link]
-$ git remote add heroku [paste the link]
-$ git push heroku master
+heroku login [your Heroku credentials]
+heroku create [copy the second link]
+git remote add heroku [paste the link]
+git push heroku master
 ```
 
 Open your app 
 
 ```
-$ heroku open
+heroku open
 ```
 
 ## Contributing
