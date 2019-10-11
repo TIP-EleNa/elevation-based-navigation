@@ -103,7 +103,7 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 * **Blake Amiot** - *Initial work*
 * **Xin-Yuan Wang** - *Initial work*
 
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
+See also the list of [contributors](https://github.com/TIP-EleNa/elevation-based-navigation/contributors) who participated in this project.
 
 ## License
 
