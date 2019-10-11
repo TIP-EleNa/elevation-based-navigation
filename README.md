@@ -1,10 +1,45 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# elevation-based-navigation
 
-## Available Scripts
+This app is the project from cs520 class at UMass Amherst in Fall, 2019. The goal is to develop a live map web/mobile app that provides users the convenience to find itinerary with the least elevation. It can benefit people especially bikers and disabilities so they can save their effort from climbing. 
 
-In the project directory, you can run:
+## Getting Started
 
-### `npm start`
+### Prerequisites
+
+You will need `node.js` and `npm` installed on your machine.<br />
+Please install them before you proceed. I recommend using `brew` to install them.
+
+```
+# open termianl
+$ brew update
+
+# install node.js and npm
+$ brew install node
+
+# test if the installation succeed and versions
+$ node -v
+$ npm -v
+```
+
+### Installing
+
+Clone and direct to the repo you just cloned or downloaded. 
+
+```
+# with ssh
+$ git clone git@github.com:TIP-EleNa/elevation-based-navigation.git
+
+# with http
+$ git clone https://github.com/TIP-EleNa/elevation-based-navigation.git
+
+$ cd elevation-based-navigation
+```
+
+Install all dependencies. See `package.json` for more information. 
+
+```
+$ npm install
+```
 
 Runs the app in the development mode.<br />
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
@@ -12,57 +47,65 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 The page will reload if you make edits.<br />
 You will also see any lint errors in the console.
 
-### `npm test`
+```
+$ npm run start
+```
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-### `npm run build`
+## Deployment
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+The app is currently deployed to [Heroku](http://heroku.com). You need to have a valid Heroku account and `Heroku CLI` installed on your machine. Also, you must have `node` and `npm` installed already.
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+Intall `Heroku CLI`. 
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```
+$ npm install -g heroku
+```
 
-### `npm run eject`
+Verifying your installation
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+```
+$ heroku -v
+```
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Create heroku git repository
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+```
+# make sure you don't have any uncommitted changes
+$ git status
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+$ heroku login [your Heroku credentials]
+$ heroku create [copy the second link]
+$ git remote add heroku [paste the link]
+$ git push heroku master
+```
 
-## Learn More
+Open your app 
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```
+$ heroku open
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Contributing
 
-### Code Splitting
+We use [Trunk Based Development](https://trunkbaseddevelopment.com/) for developing. 
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
+## Versioning
 
-### Analyzing the Bundle Size
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/TIP-EleNa/elevation-based-navigation/tags). 
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
+## Authors
 
-### Making a Progressive Web App
+* **Chuuh-Hsiang Hung** - *Initial work* - [Personal Website](https://naturalsmen.github.io/devportfolio)
+* **Blake Amiot** - *Initial work*
+* **Xin-Yuan Wang** - *Initial work*
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
+See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
 
-### Advanced Configuration
+## License
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
 
-### Deployment
+## Acknowledgments
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+TBD
