@@ -89,10 +89,6 @@ Open your app
 heroku open
 ```
 
-## Contributing
-
-We use [Trunk Based Development](https://trunkbaseddevelopment.com/) for developing. 
-
 ## Versioning
 
 We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/TIP-EleNa/elevation-based-navigation/tags). 
