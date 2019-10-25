@@ -53,11 +53,15 @@ class RoutingControl extends Component {
 		const end = await provider.search({ query: this.state.end }); 
 
 		const { map } = this.props.leaflet;
-	    const leafletElement = L.Routing.control({})
+	    const leafletElement = L.Routing.control({}); 
 	    leafletElement.getPlan().setWaypoints([
         	L.latLng(start[0].y, start[0].x), 
 			L.latLng(end[0].y, end[0].x)
         ]); 
+        leafletElement.on('routeselected', function(routes) {
+        	console.log(`routes: ${routes}`); 
+        	console.log(`instructions: ${routes.route.instructions}`); 
+        }); 
 		leafletElement.addTo(map); 
 	}
 
@@ -65,21 +69,21 @@ class RoutingControl extends Component {
 		return (
 			<Control position='topleft' className='geosearch leaflet-bar leaflet-control leaflet-control-geosearch active'>
 				<form onSubmit={ this.renderRoute }>
-						<input className='glass' type='text' value={this.state.start} onChange={ e => { this.addrChangeHandler(e, 'start'); } } />
-						<input className='glass' type='text' value={this.state.end} onChange={ e => { this.addrChangeHandler(e, 'end'); } } />
-						<div className='results'>
-							{   
-								this.state.matches_start.map((item, key) => {
-									return <div key={key} style={{ background: 'white' }} onClick={ () => { this.selectHandler(item.label, 'start'); } }>{item.label}</div>
-								})
-							}
-							{
-								this.state.matches_end.map((item, key) => {
-									return <div key={key} style={{ background: 'white' }} onClick={ () => { this.selectHandler(item.label, 'end'); } }>{item.label}</div>
-								})
-							}
-						</div>
-						<button type='submit'>Start</button>
+					<input className='glass' type='text' value={this.state.start} onChange={ e => { this.addrChangeHandler(e, 'start'); } } />
+					<input className='glass' type='text' value={this.state.end} onChange={ e => { this.addrChangeHandler(e, 'end'); } } />
+					<div className='results'>
+						{   
+							this.state.matches_start.map((item, key) => {
+								return <div key={key} style={{ background: 'white' }} onClick={ () => { this.selectHandler(item.label, 'start'); } }>{item.label}</div>
+							})
+						}
+						{
+							this.state.matches_end.map((item, key) => {
+								return <div key={key} style={{ background: 'white' }} onClick={ () => { this.selectHandler(item.label, 'end'); } }>{item.label}</div>
+							})
+						}
+					</div>
+					<button type='submit'>Start</button>
 				</form>
 			</Control>
 		);
