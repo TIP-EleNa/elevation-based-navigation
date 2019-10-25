@@ -7,7 +7,7 @@ This app is the project from cs520 class at UMass Amherst in Fall, 2019. The goa
 ### Prerequisites
 
 You will need `node.js` and `npm` installed on your machine.<br />
-Please install them before you proceed. I recommend using `brew` to install them.
+Please install them before you proceed. 
 
 ```
 # open termianl
@@ -88,10 +88,6 @@ Open your app
 ```
 heroku open
 ```
-
-## Contributing
-
-We use [Trunk Based Development](https://trunkbaseddevelopment.com/) for developing. 
 
 ## Versioning
 
