@@ -26,7 +26,7 @@ class RoutingControl extends Component {
 			if(cl.length === 0) {
 				this.setState({ [matches]: [] }); 
 			}
-			else if(cl.length % 4 === 0) {
+			else if(cl.length % 2 === 0) {
 				provider
 					.search({ query: cl })
 					.then(results => {
