@@ -11,7 +11,7 @@ class LocateControl extends Component {
     map.on('locationfound', onLocationFound); 
     locate.addTo(map);
 
-    if (startDirectly) {
+    if(startDirectly) {
       locate.start();
     }
   }

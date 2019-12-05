@@ -9,42 +9,12 @@ const locateOptions = {
   position: 'topright',
   strings: {
       title: ''
-  },
-  onActivate: () => {} 
+  }
 }
 
 class Map extends Component {
-  constructor(props) {
-    super(props); 
-    this.state = {
-      currLoc: undefined, 
-      start: undefined, 
-      end: undefined
-    }
-  }
-
-  locationFoundHandler = e => {
-    this.setState({ currLoc: e.latlng }); 
-  }
-
-  routeHandler = e => {
-    
-  }
-
-  renderRoute() {
-    const {currLoc, start, end} = this.state; 
-    if(start !== undefined && end !== undefined) {
-      return (
-        <RoutingControl 
-          from={start === undefined ? currLoc : [57.74, 11.94]} 
-          to={[57.6792, 11.949]} 
-        />
-      );
-    }
-  }
-
   render() {
-    const { from, to } = this.props; 
+    const { from, to, onLocationFound } = this.props; 
     return (
       <LeafletMap
         zoom={15}
@@ -60,7 +30,7 @@ class Map extends Component {
         <TileLayer
           url='http://{s}.tile.osm.org/{z}/{x}/{y}.png'
         />
-        <LocateControl options={locateOptions} onLocationFound={ this.locationFoundHandler } startDirectly/>
+        <LocateControl options={locateOptions} onLocationFound={onLocationFound} startDirectly />
         <Search />
         <RoutingControl from={from} to={to} />
       </LeafletMap>

@@ -39,6 +39,7 @@ class App extends Component {
 	constructor(props) {
 		super(props); 
 		this.state = {
+			currLoc: '', 
 			start: '', 
 			end: '', 
 			matches_start: [], 
@@ -84,10 +85,17 @@ class App extends Component {
 		this.setState({from: from, to: to}); 
 	}
 
+	locationFoundHandler = e => {
+		this.setState({ currLoc: e.latlng }); 
+	}
+
 	render() {
 		return (
 			<div className="App">
-				<Map from={this.state.from} to={this.state.to} />
+				<Map 
+					from={this.state.from} 
+					to={this.state.to} 
+					onLocationFound={this.locationFoundHandler} />
 				<ControlPanel 
 					style={controlPanelStyle} 
 					state={this.state} 
