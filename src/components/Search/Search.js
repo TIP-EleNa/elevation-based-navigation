@@ -1,7 +1,6 @@
-import React, { Component } from 'react'; 
+import { Component } from 'react'; 
 import { withLeaflet } from 'react-leaflet';
 import { GeoSearchControl, OpenStreetMapProvider } from 'leaflet-geosearch';
-import L from 'leaflet'; 
 
 import './leaflet-geosearch.css'; 
 

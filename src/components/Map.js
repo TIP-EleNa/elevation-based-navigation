@@ -1,5 +1,5 @@
 import React, { Component } from 'react'; 
-import { Map as LeafletMap, TileLayer, Marker, Popup, GeoJSON } from 'react-leaflet';
+import { Map as LeafletMap, TileLayer} from 'react-leaflet';
 
 import LocateControl from './LocateControl'; 
 import RoutingControl from './RoutingControl'; 
@@ -44,6 +44,7 @@ class Map extends Component {
   }
 
   render() {
+    const { from, to } = this.props; 
     return (
       <LeafletMap
         zoom={15}
@@ -54,14 +55,14 @@ class Map extends Component {
         scrollWheelZoom={true}
         dragging={true}
         animate={true}
-        easeLinearity={0.35}
+        easeLinearity={0.35} 
       >
         <TileLayer
           url='http://{s}.tile.osm.org/{z}/{x}/{y}.png'
         />
         <LocateControl options={locateOptions} onLocationFound={ this.locationFoundHandler } startDirectly/>
         <Search />
-        <RoutingControl />
+        <RoutingControl from={from} to={to} />
       </LeafletMap>
     );
   }
