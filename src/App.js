@@ -24,13 +24,18 @@ const controlPanelStyle = {
 		marginBottom: 10
 	}, 
 	input_box: {
-
+		width: "70%"
 	}, 
 	input_range: {
 		marginTop: 50
 	}, 
 	button_submit: {
 		marginTop: 50
+	}, 
+	search_result: {
+		background: 'white', 
+		borderStyle: 'solid', 
+		borderWidth: '1px'
 	}
 }
 

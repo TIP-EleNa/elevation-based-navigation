@@ -1,11 +1,5 @@
 import React, { Component } from 'react';
 
-const searchResultStyle = {
-	background: 'white', 
-	borderStyle: 'solid', 
-	borderWidth: '1px'
-}; 
-
 class ControlPanel extends Component {
 	constructor(props) {
 		super(props); 
@@ -20,7 +14,8 @@ class ControlPanel extends Component {
 	}
 
 	inputBlurHandler = (input) => {
-		this.setState({[input]: false}); 
+		// send blur to event loop so suggestion list can be clicked
+		setTimeout(() => this.setState({[input]: false})); 
 	}
 
 	render() {
@@ -34,7 +29,7 @@ class ControlPanel extends Component {
 					{   
 						this.state.focus_from ? 
 						state.matches_start.map((item, key) => {
-							return <div key={key} style={searchResultStyle} onClick={ () => { selectHandler(item.label, 'start'); } }>{item.label}</div>
+							return <div key={key} style={style.search_result} onClick={ () => { selectHandler(item.label, 'start'); } }>{item.label}</div>
 						}) : null
 					}
 					<h3 style={style.label}>TO</h3>
@@ -42,7 +37,7 @@ class ControlPanel extends Component {
 					{
 						this.state.focus_to ? 
 						state.matches_end.map((item, key) => {
-							return <div key={key} style={searchResultStyle} onClick={ () => { selectHandler(item.label, 'end'); } }>{item.label}</div>
+							return <div key={key} style={style.search_result} onClick={ () => { selectHandler(item.label, 'end'); } }>{item.label}</div>
 						}) : null
 					}
 					<div style={style.input_range}>
