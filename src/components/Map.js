@@ -8,7 +8,7 @@ import Search from './Search/Search'
 const locateOptions = {
   position: 'topright',
   strings: {
-      title: ''
+    title: ''
   }
 }
 
@@ -27,10 +27,12 @@ class Map extends Component {
         animate={true}
         easeLinearity={0.35} 
       >
-        <TileLayer
-          url='http://{s}.tile.osm.org/{z}/{x}/{y}.png'
-        />
-        <LocateControl options={locateOptions} onLocationFound={onLocationFound} startDirectly />
+        <TileLayer 
+          url='http://{s}.tile.osm.org/{z}/{x}/{y}.png' />
+        <LocateControl 
+          options={locateOptions} 
+          onLocationFound={onLocationFound} 
+          startDirectly />
         <Search />
         <RoutingControl from={from} to={to} />
       </LeafletMap>

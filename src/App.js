@@ -41,6 +41,26 @@ const controlPanelStyle = {
 	}
 }
 
+let cache = []
+const query = (addr) => {
+	let list = [];
+	for(let item in cache) {
+		if(item.indexOf(addr) === -1 || list.length > 5) break; 
+		list.push(item); 
+	} 
+	return list; 
+}
+
+const addToCache = (addr) => {
+	if(addr === '') return; 
+	if(cache.length > 10) cache.splice(cache.length-1, 1); 
+	const idx = cache.indexOf(addr); 
+	if(idx >= 0) {
+		cache.splice(idx, 1); 
+	}
+	cache.unshift(addr); 
+}
+
 const provider = new OpenStreetMapProvider(); 
 class App extends Component {
 	constructor(props) {
@@ -51,6 +71,8 @@ class App extends Component {
 			end: '', 
 			matches_start: [], 
 			matches_end: [], 
+			matches_cache_start: [], 
+			matches_cache_end: [], 
 			from: undefined, 
 			to: undefined
 		}
@@ -60,16 +82,19 @@ class App extends Component {
 		const addr = e.target.value; 
 		const matches = `matches_${c}`; 
 		this.setState({ [c]: addr }, () => {
-			let cl = this.state[c]
+			let cl = this.state[c].trim().replace(/\s+/g,' '); 
 			if(cl.length === 0) {
-				this.setState({ [matches]: [] }); 
-			}
-			else if(cl.length % 2 === 0) {
-				provider
-					.search({ query: cl })
-					.then(results => {
-						this.setState({ [matches]: results }); 
+				this.setState({ [`matches_cache_${c}`]: cache, [matches]: [] }); 
+			} else {
+				const list_cache = query(cl); 
+				if(list_cache.length > 0) {
+					this.setState({ [`matches_cache_${c}`]: list_cache, [matches]: [] })
+				} else {
+					provider
+						.search({ query: cl })
+						.then(results => {this.setState({ [`matches_cache_${c}`]: [], [matches]: results }); 
 					})
+				}
 			}
 		})
 	}
@@ -80,10 +105,16 @@ class App extends Component {
 
 	getPath = async (e) => {
 		e.preventDefault(); 
-		let start = this.state.start; 
-		let end = this.state.end; 
-		if(start === 'Your Location') start = this.state.currLoc; 
-		if(end === 'Your Location') end = this.state.currLoc; 
+		let start = this.state.start.trim().replace(/\s+/g,' '); 
+		let end = this.state.end.trim().replace(/\s+/g,' '); 
+		let currLoc = this.state.currLoc; 
+
+		addToCache(start); 
+		addToCache(end); 
+
+		if(start === 'Your Location') start = currLoc; 
+		if(end === 'Your Location') end = currLoc; 
+
 		const from = await provider.search({ query: start }); 
 		const to = await provider.search({ query: end }); 
 		this.setState({from: from, to: to}); 
@@ -91,24 +122,24 @@ class App extends Component {
 
 	locationFoundHandler = e => {
 		const currLoc = `${e.latlng.lat}, ${e.latlng.lng}`; 
-		this.setState({ currLoc: currLoc }); 
+		addToCache('Your Location'); 
+		this.setState({ currLoc: currLoc, matches_cache_start: ['Your Location'], matches_cache_end: ['Your Location'] }); 
 	}
 
 	render() {
 		return (
 			<div className="App">
 				<Map 
-					start={this.state.start}
-					end={this.state.end}
-					from={this.state.from} 
-					to={this.state.to} 
-					onLocationFound={this.locationFoundHandler} />
+				from={this.state.from} 
+				to={this.state.to} 
+				onLocationFound={this.locationFoundHandler} />
 				<ControlPanel 
 					style={controlPanelStyle} 
 					state={this.state} 
 					addrChangeHandler={this.addrChangeHandler} 
 					selectHandler={this.selectHandler} 
-					getPath={this.getPath} />
+					getPath={this.getPath} 
+					cache={cache} />
 			</div>
 		);
 	}

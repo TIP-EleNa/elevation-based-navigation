@@ -21,7 +21,7 @@ class ControlPanel extends Component {
 	}
 
 	render() {
-		const { style, state, addrChangeHandler, selectHandler, getPath } = this.props; 
+		const { style, state, addrChangeHandler, selectHandler, getPath, cache } = this.props; 
 		return (
 			<form onSubmit={ getPath } style={style.panel}>
 				<div style={style.content}>
@@ -30,27 +30,29 @@ class ControlPanel extends Component {
 					<input type="text" style={style.input_box} value={state.start} onFocus={() => this.inputFocusHandler('focus_from')} onBlur={() => this.inputBlurHandler('focus_from')} onChange={ e => { addrChangeHandler(e, 'start'); } }/>
 					{
 						this.state.focus_from ? 
-							<div style={style.search_result} onClick={ () => { selectHandler('Your Location', 'start'); } }>Your Location</div> : 
-							null
+							state.matches_cache_start.map((item, key) => {
+								return <div key={key} style={style.search_result} onClick={ () => { selectHandler(item, 'start'); } }>{item}</div>
+							}) : null
 					}
 					{   
 						this.state.focus_from ? 
-						state.matches_start.map((item, key) => {
-							return <div key={key} style={style.search_result} onClick={ () => { selectHandler(item.label, 'start'); } }>{item.label}</div>
-						}) : null
+							state.matches_start.map((item, key) => {
+								return <div key={key} style={style.search_result} onClick={ () => { selectHandler(item.label, 'start'); } }>{item.label}</div>
+							}) : null
 					}
 					<h3 style={style.label}>TO</h3>
 					<input type="text" style={style.input_box} value={state.end} onFocus={() => this.inputFocusHandler('focus_to')} onBlur={() => this.inputBlurHandler('focus_to')} onChange={ e => { addrChangeHandler(e, 'end'); } }/>
 					{
 						this.state.focus_to ? 
-							<div style={style.search_result} onClick={ () => { selectHandler('Your Location', 'end'); } }>Your Location</div> : 
-							null
+							state.matches_cache_end.map((item, key) => {
+								return <div key={key} style={style.search_result} onClick={ () => { selectHandler(item, 'end'); } }>{item}</div>
+							}) : null
 					}
 					{
 						this.state.focus_to ? 
-						state.matches_end.map((item, key) => {
-							return <div key={key} style={style.search_result} onClick={ () => { selectHandler(item.label, 'end'); } }>{item.label}</div>
-						}) : null
+							state.matches_end.map((item, key) => {
+								return <div key={key} style={style.search_result} onClick={ () => { selectHandler(item.label, 'end'); } }>{item.label}</div>
+							}) : null
 					}
 					<div style={style.input_range}>
 						<input type="range" />

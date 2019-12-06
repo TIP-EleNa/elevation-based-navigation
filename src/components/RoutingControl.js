@@ -3,14 +3,26 @@ import { withLeaflet } from 'react-leaflet';
 import L from 'leaflet'; 
 import 'leaflet-routing-machine'; 
 
+const isValid = (from, to) => {
+	return from !== undefined && to !== undefined; 
+}
+
+const isFound = (from, to) => {
+	return from.length > 0 && to.length > 0; 
+}
+
+const isDifferent = (prevProps, props) => {
+	return JSON.stringify(prevProps.from[0]) !== JSON.stringify(props.from[0]) && 
+			JSON.stringify(prevProps.to[0]) !== JSON.stringify(props.to[0]); 
+}
+
 class RoutingControl extends Component {
 	componentDidUpdate(prevProps) {
 		const {from, to} = this.props; 
-		if(from !== undefined && to !== undefined && 
-			from.length > 0 && to.length > 0 && 
-			JSON.stringify(prevProps.from[0]) !== JSON.stringify(from[0]) && 
-			JSON.stringify(prevProps.to[0]) !== JSON.stringify(to[0])) {
-			this.renderRoute(from , to); 
+		if(isValid(from, to) && isFound(from, to)) {
+			if(!isValid(prevProps.from, prevProps.to) || !isFound(prevProps.from, prevProps.to) || isDifferent(prevProps, this.props)) {
+				this.renderRoute(from, to); 
+			}
 		}
 	}
 
