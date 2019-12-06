@@ -73,14 +73,7 @@ class App extends Component {
 	}
 
 	selectHandler = (addr, c) => {
-		const matches = `matches_${c}`; 
-		this.setState({ [c]: addr }, () => {
-			provider
-				.search({ query: addr })
-				.then(results => {
-					this.setState({ [matches]: [] }); 
-				})
-		}); 
+		this.setState({ [c]: addr }); 
 	}
 
 	getPath = async (e) => {

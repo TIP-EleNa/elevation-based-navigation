@@ -15,7 +15,9 @@ class ControlPanel extends Component {
 
 	inputBlurHandler = (input) => {
 		// send blur to event loop so suggestion list can be clicked
-		setTimeout(() => this.setState({[input]: false})); 
+		setTimeout(() => {
+			this.setState({[input]: false})
+		}, 100); 
 	}
 
 	render() {
