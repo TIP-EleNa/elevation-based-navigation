@@ -16,7 +16,6 @@ const controlPanelStyle = {
 	}, 
 	content: {
 		width: "90%", 
-		alignItems: "center", 
 		marginTop: 30
 	}, 
 	label: {
@@ -78,13 +77,18 @@ class App extends Component {
 
 	getPath = async (e) => {
 		e.preventDefault(); 
-		const from = await provider.search({ query: this.state.start }); 
-		const to = await provider.search({ query: this.state.end }); 
+		let start = this.state.start; 
+		let end = this.state.end; 
+		if(start === 'Your Location') start = this.state.currLoc; 
+		if(end === 'Your Location') end = this.state.currLoc; 
+		const from = await provider.search({ query: start }); 
+		const to = await provider.search({ query: end }); 
 		this.setState({from: from, to: to}); 
 	}
 
 	locationFoundHandler = e => {
-		this.setState({ currLoc: e.latlng }); 
+		const currLoc = `${e.latlng.lat}, ${e.latlng.lng}`; 
+		this.setState({ currLoc: currLoc }); 
 	}
 
 	render() {
