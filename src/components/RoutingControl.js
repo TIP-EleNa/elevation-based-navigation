@@ -4,6 +4,16 @@ import L from 'leaflet';
 import 'leaflet-routing-machine'; 
 
 class RoutingControl extends Component {
+	componentDidUpdate(prevProps) {
+		const {from, to} = this.props; 
+		if(from !== undefined && to !== undefined && 
+			from.length > 0 && to.length > 0 && 
+			JSON.stringify(prevProps.from[0]) !== JSON.stringify(from[0]) && 
+			JSON.stringify(prevProps.to[0]) !== JSON.stringify(to[0])) {
+			this.renderRoute(from , to); 
+		}
+	}
+
 	renderRoute = (from, to) => {
 		const { map } = this.props.leaflet;
 	    const leafletElement = L.Routing.control({}); 
@@ -19,9 +29,6 @@ class RoutingControl extends Component {
 	}
 
 	render() {
-		const {from, to} = this.props;
-		if(from !== undefined && to !== undefined && 
-			from.length > 0 && to.length > 0 ) this.renderRoute(from, to); 
 		return null; 
 	}
 }

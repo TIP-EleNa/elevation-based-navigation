@@ -98,6 +98,8 @@ class App extends Component {
 		return (
 			<div className="App">
 				<Map 
+					start={this.state.start}
+					end={this.state.end}
 					from={this.state.from} 
 					to={this.state.to} 
 					onLocationFound={this.locationFoundHandler} />
