@@ -34,7 +34,10 @@ const controlPanelStyle = {
 	search_result: {
 		background: 'white', 
 		borderStyle: 'solid', 
-		borderWidth: '1px'
+		borderWidth: '1px', 
+		padding: '5px 0px', 
+		width: '70%', 
+		margin: '0 auto'
 	}
 }
 
