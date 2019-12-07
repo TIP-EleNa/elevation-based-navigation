@@ -17,17 +17,17 @@ class ControlPanel extends Component {
 		// send blur to event loop so suggestion list can be clicked
 		setTimeout(() => {
 			this.setState({[input]: false})
-		}, 100); 
+		}, 10); 
 	}
 
 	render() {
-		const { style, state, addrChangeHandler, selectHandler, getPath } = this.props; 
+		const { style, state, addrChangeHandler, selectHandler, getPath, fromInput, toInput } = this.props; 
 		return (
 			<form onSubmit={ getPath } style={style.panel}>
 				<div style={style.content}>
 					<h1>EleNa Ultra</h1>
 					<h3 style={style.label}>FROM</h3>
-					<input type="text" style={style.input_box} value={state.start} onFocus={() => this.inputFocusHandler('focus_from')} onBlur={() => this.inputBlurHandler('focus_from')} onChange={ e => { addrChangeHandler(e, 'start'); } }/>
+					<input type="text" style={style.input_box} value={state.start} ref={fromInput} onFocus={() => this.inputFocusHandler('focus_from')} onBlur={() => this.inputBlurHandler('focus_from')} onChange={ e => { addrChangeHandler(e, 'start'); } }/>
 					{
 						this.state.focus_from ? 
 							state.matches_cache_start.map((item, key) => {
@@ -41,7 +41,7 @@ class ControlPanel extends Component {
 							}) : null
 					}
 					<h3 style={style.label}>TO</h3>
-					<input type="text" style={style.input_box} value={state.end} onFocus={() => this.inputFocusHandler('focus_to')} onBlur={() => this.inputBlurHandler('focus_to')} onChange={ e => { addrChangeHandler(e, 'end'); } }/>
+					<input type="text" style={style.input_box} value={state.end} ref={toInput} onFocus={() => this.inputFocusHandler('focus_to')} onBlur={() => this.inputBlurHandler('focus_to')} onChange={ e => { addrChangeHandler(e, 'end'); } }/>
 					{
 						this.state.focus_to ? 
 							state.matches_cache_end.map((item, key) => {

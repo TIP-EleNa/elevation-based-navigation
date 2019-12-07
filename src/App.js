@@ -63,6 +63,9 @@ class App extends Component {
 		this.cache = []; 
 
 		this.routingControl = null; 
+
+		this.fromInput = React.createRef(); 
+		this.toInput = React.createRef(); 
 	}
 
 	componentDidMount() {
@@ -120,7 +123,7 @@ class App extends Component {
 		const matches = `matches_${c}`; 
 		this.setState({ [c]: addr }, () => {
 			let cl = this.state[c].trim().replace(/\s+/g,' '); 
-			if(cl.length === 0) {
+			if(cl === '') {
 				this.setState({ [`matches_cache_${c}`]: this.cache, [matches]: [] }); 
 			} else {
 				const list_cache = this.query(cl); 
@@ -142,10 +145,13 @@ class App extends Component {
 
 	addRoutingControl = async (e) => {
 		e.preventDefault(); 
+		this.validateInput(); 
 
 		let start = this.state.start.trim().replace(/\s+/g,' '); 
 		let end = this.state.end.trim().replace(/\s+/g,' '); 
 		let currLoc = this.state.currLoc; 
+
+		if(start === '' || end === '') return; 
 
 		this.addToCache(start); 
 		this.addToCache(end); 
@@ -157,7 +163,7 @@ class App extends Component {
 		const to = await provider.search({ query: end }); 
 		const prev_from = this.from; 
 		const prev_to = this.to; 
-		if(this.isValid(from, to) && this.isFound(from, to)) {
+		if(this.isFound(from, to)) {
 			if(!this.isValid(prev_from, prev_to) || 
 				!this.isFound(prev_from, prev_to) || 
 				this.isDifferent(prev_from, prev_to, from, to)) {
@@ -195,6 +201,17 @@ class App extends Component {
 		this.cache.unshift(addr); 
 	}
 
+	validateInput = () => {
+		if(this.fromInput.current.value === '') {
+			this.fromInput.current.focus(); 
+			return; 
+		}
+		if(this.toInput.current.value === '') {
+			this.toInput.current.focus(); 
+			return; 
+		}
+	}
+
 	isValid = (from, to) => {
 		return from !== undefined && to !== undefined; 
 	}
@@ -217,7 +234,9 @@ class App extends Component {
 					state={this.state} 
 					addrChangeHandler={this.addrChangeHandler} 
 					selectHandler={this.selectHandler} 
-					getPath={this.addRoutingControl} />
+					getPath={this.addRoutingControl} 
+					fromInput={this.fromInput} 
+					toInput={this.toInput} />
 			</div>
 		);
 	}
