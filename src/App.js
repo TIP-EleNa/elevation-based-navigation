@@ -61,6 +61,8 @@ class App extends Component {
 		this.from = ''; 
 		this.to = ''; 
 		this.cache = []; 
+
+		this.routingControl = null; 
 	}
 
 	componentDidMount() {
@@ -159,12 +161,15 @@ class App extends Component {
 			if(!this.isValid(prev_from, prev_to) || 
 				!this.isFound(prev_from, prev_to) || 
 				this.isDifferent(prev_from, prev_to, from, to)) {
-			    const routingControl = L.Routing.control({}); 
-			    routingControl.getPlan().setWaypoints([
+			    if(this.routingControl != null) {
+			    	this.map.removeControl(this.routingControl); 
+			    } 
+		    	this.routingControl = L.Routing.control({}); 
+			    this.routingControl.getPlan().setWaypoints([
 		        	L.latLng(from[0].y, from[0].x), 
 					L.latLng(to[0].y, to[0].x)
 		        ]); 
-				routingControl.addTo(this.map); 
+				this.routingControl.addTo(this.map); 
 				this.from = from; 
 				this.to = to; 
 			}
