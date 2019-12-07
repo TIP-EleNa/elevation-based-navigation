@@ -8,41 +8,6 @@ import 'leaflet-routing-machine';
 
 import './App.css';
 
-const controlPanelStyle = {
-	panel: {
-		backgroundColor: "lightgray", 
-		display: "flex", 
-		flexDirection: "row",
-		justifyContent: "center", 
-		width: "30%"
-	}, 
-	content: {
-		width: "90%", 
-		marginTop: 30
-	}, 
-	label: {
-		textAlign: "left", 
-		marginBottom: 10
-	}, 
-	input_box: {
-		width: "70%"
-	}, 
-	input_range: {
-		marginTop: 50
-	}, 
-	button_submit: {
-		marginTop: 50
-	}, 
-	search_result: {
-		background: 'white', 
-		borderStyle: 'solid', 
-		borderWidth: '1px', 
-		padding: '5px 0px', 
-		width: '70%', 
-		margin: '0 auto'
-	}
-}
-
 const provider = new OpenStreetMapProvider(); 
 
 class App extends Component {
@@ -73,6 +38,9 @@ class App extends Component {
 		this.addBaseMap(); 
 		this.addLocateControl(); 
 		this.addSearchControl(); 
+	}
+
+	componentDidUpdate() {
 	}
 
 	initializeMap = () => {
@@ -110,7 +78,12 @@ class App extends Component {
 	locationFoundHandler = e => {
 		const currLoc = `${e.latlng.lat}, ${e.latlng.lng}`; 
 		this.addToCache('Your Location'); 
-		this.setState({ currLoc: currLoc, matches_cache_start: ['Your Location'], matches_cache_end: ['Your Location'] }); 
+		if(this.state.matches_cache_start.length === 0 && this.state.matches_cache_end.length === 0) {
+			this.setState({ currLoc: currLoc, matches_cache_start: ['Your Location'], matches_cache_end: ['Your Location'] }); 
+		} else {
+			this.setState({ currLoc: currLoc }); 
+		}
+		
 	}
 
 	addSearchControl = () => {
@@ -146,7 +119,7 @@ class App extends Component {
 	addRoutingControl = async (e) => {
 		e.preventDefault(); 
 		this.validateInput(); 
-
+		
 		let start = this.state.start.trim().replace(/\s+/g,' '); 
 		let end = this.state.end.trim().replace(/\s+/g,' '); 
 		let currLoc = this.state.currLoc; 
@@ -158,7 +131,7 @@ class App extends Component {
 
 		if(start === 'Your Location') start = currLoc; 
 		if(end === 'Your Location') end = currLoc; 
-
+		
 		const from = await provider.search({ query: start }); 
 		const to = await provider.search({ query: end }); 
 		const prev_from = this.from; 
@@ -184,17 +157,23 @@ class App extends Component {
 
 	query = (addr) => {
 		let list = [];
-		for(let item in this.cache) {
-			if(item.indexOf(addr) === -1 || list.length > 5) break; 
-			list.push(item); 
+		for(let i in this.cache) {
+			if(list.length > 5) break; 
+			if(this.cache[i].toLowerCase().indexOf(addr.toLowerCase()) === -1) continue; 
+			list.push(this.cache[i]); 
 		} 
 		return list; 
 	}
 
 	addToCache = (addr) => {
-		if(addr === '') return; 
 		if(this.cache.length > 10) this.cache.splice(this.cache.length-1, 1); 
-		const idx = this.cache.indexOf(addr); 
+		let idx = -1; 
+		for(let i in this.cache) {
+			if(addr.toLowerCase() === this.cache[i].toLowerCase()) {
+				idx = i; 
+				break; 
+			}
+		}
 		if(idx >= 0) {
 			this.cache.splice(idx, 1); 
 		}
@@ -230,7 +209,6 @@ class App extends Component {
 			<div className="App">
 				<div id='map'></div>
 				<ControlPanel 
-					style={controlPanelStyle} 
 					state={this.state} 
 					addrChangeHandler={this.addrChangeHandler} 
 					selectHandler={this.selectHandler} 

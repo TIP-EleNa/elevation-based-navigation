@@ -1,5 +1,56 @@
 import React, { Component } from 'react';
 
+const style = {
+	panel: {
+		backgroundColor: "#222930", 
+		color: "#4EB1BA", 
+		fontFamily: "Verdana, Geneva, sans-serif", 
+		display: "flex", 
+		flexDirection: "row",
+		justifyContent: "center", 
+		width: "30%"
+	}, 
+	content: {
+		width: "90%", 
+		marginTop: 70
+	}, 
+	title: {
+		fontSize: 40, 
+		marginBottom: 70
+	}, 
+	label: {
+		textAlign: "left", 
+		marginBottom: 20
+	}, 
+	input_box: {
+		width: "70%", 
+		fontFamily: "Verdana, Geneva, sans-serif", 
+		fontSize: "14px"
+	}, 
+	input_range: {
+		marginTop: 50
+	}, 
+	button_submit: {
+		backgroundColor: "#4EB1BA", 
+		color: "white", 
+		fontSize: 20, 
+		fontWeight: "bold", 
+		padding: "5px 20px", 
+		cursor: "pointer", 
+		marginTop: 50
+	}, 
+	search_result: {
+		background: 'white', 
+		borderStyle: 'solid', 
+		borderWidth: '1px', 
+		padding: '5px 0px', 
+		width: '70%', 
+		margin: '0 auto', 
+		fontSize: "14px", 
+		color: "black"
+	}
+}
+
 class ControlPanel extends Component {
 	constructor(props) {
 		super(props); 
@@ -21,11 +72,11 @@ class ControlPanel extends Component {
 	}
 
 	render() {
-		const { style, state, addrChangeHandler, selectHandler, getPath, fromInput, toInput } = this.props; 
+		const { state, addrChangeHandler, selectHandler, getPath, fromInput, toInput } = this.props; 
 		return (
 			<form onSubmit={ getPath } style={style.panel}>
 				<div style={style.content}>
-					<h1>EleNa Ultra</h1>
+					<h1 style={style.title}>EleNa Ultra</h1>
 					<h3 style={style.label}>FROM</h3>
 					<input type="text" style={style.input_box} value={state.start} ref={fromInput} onFocus={() => this.inputFocusHandler('focus_from')} onBlur={() => this.inputBlurHandler('focus_from')} onChange={ e => { addrChangeHandler(e, 'start'); } }/>
 					{
