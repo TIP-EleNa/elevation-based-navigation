@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 
-import Map from './components/Map'; 
 import ControlPanel from './components/ControlPanel'; 
-import { OpenStreetMapProvider } from 'leaflet-geosearch'; 
+import { GeoSearchControl, OpenStreetMapProvider } from 'leaflet-geosearch'; 
+import L from 'leaflet'; 
+import Locate from 'leaflet.locatecontrol';
+import 'leaflet-routing-machine'; 
 
 import './App.css';
 
@@ -41,27 +43,8 @@ const controlPanelStyle = {
 	}
 }
 
-let cache = []
-const query = (addr) => {
-	let list = [];
-	for(let item in cache) {
-		if(item.indexOf(addr) === -1 || list.length > 5) break; 
-		list.push(item); 
-	} 
-	return list; 
-}
-
-const addToCache = (addr) => {
-	if(addr === '') return; 
-	if(cache.length > 10) cache.splice(cache.length-1, 1); 
-	const idx = cache.indexOf(addr); 
-	if(idx >= 0) {
-		cache.splice(idx, 1); 
-	}
-	cache.unshift(addr); 
-}
-
 const provider = new OpenStreetMapProvider(); 
+
 class App extends Component {
 	constructor(props) {
 		super(props); 
@@ -73,9 +56,61 @@ class App extends Component {
 			matches_end: [], 
 			matches_cache_start: [], 
 			matches_cache_end: [], 
-			from: undefined, 
-			to: undefined
 		}
+
+		this.from = ''; 
+		this.to = ''; 
+		this.cache = []; 
+	}
+
+	componentDidMount() {
+		this.map = this.initializeMap(); 
+		this.addBaseMap(); 
+		this.addLocateControl(); 
+		this.addSearchControl(); 
+	}
+
+	initializeMap = () => {
+		let map = L.map('map', {
+			zoom: 15, 
+	        maxZoom: 15, 
+	        attributionControl: true, 
+	        zoomControl: true, 
+	        doubleClickZoom: true,
+	        scrollWheelZoom: true,
+	        dragging: true,
+	        animate: true,
+	        easeLinearity: 0.35
+		}); 
+		return map; 
+	}
+
+	addBaseMap = () => {
+		L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png').addTo(this.map); 
+	}
+
+	addLocateControl = () => {
+		const options = {
+		  position: 'topright',
+		  strings: {
+		    title: ''
+		  }
+		}
+		const locate = new Locate(options);
+	    this.map.on('locationfound', this.locationFoundHandler); 
+	    locate.addTo(this.map);
+	    locate.start()
+	}
+
+	locationFoundHandler = e => {
+		const currLoc = `${e.latlng.lat}, ${e.latlng.lng}`; 
+		this.addToCache('Your Location'); 
+		this.setState({ currLoc: currLoc, matches_cache_start: ['Your Location'], matches_cache_end: ['Your Location'] }); 
+	}
+
+	addSearchControl = () => {
+		const searchControl = new GeoSearchControl({ provider: provider }); 
+		searchControl.addTo(this.map); 
 	}
 
 	addrChangeHandler = (e, c) => {
@@ -84,9 +119,9 @@ class App extends Component {
 		this.setState({ [c]: addr }, () => {
 			let cl = this.state[c].trim().replace(/\s+/g,' '); 
 			if(cl.length === 0) {
-				this.setState({ [`matches_cache_${c}`]: cache, [matches]: [] }); 
+				this.setState({ [`matches_cache_${c}`]: this.cache, [matches]: [] }); 
 			} else {
-				const list_cache = query(cl); 
+				const list_cache = this.query(cl); 
 				if(list_cache.length > 0) {
 					this.setState({ [`matches_cache_${c}`]: list_cache, [matches]: [] })
 				} else {
@@ -103,43 +138,81 @@ class App extends Component {
 		this.setState({ [c]: addr }); 
 	}
 
-	getPath = async (e) => {
+	addRoutingControl = async (e) => {
 		e.preventDefault(); 
+
 		let start = this.state.start.trim().replace(/\s+/g,' '); 
 		let end = this.state.end.trim().replace(/\s+/g,' '); 
 		let currLoc = this.state.currLoc; 
 
-		addToCache(start); 
-		addToCache(end); 
+		this.addToCache(start); 
+		this.addToCache(end); 
 
 		if(start === 'Your Location') start = currLoc; 
 		if(end === 'Your Location') end = currLoc; 
 
 		const from = await provider.search({ query: start }); 
 		const to = await provider.search({ query: end }); 
-		this.setState({from: from, to: to}); 
+		const prev_from = this.from; 
+		const prev_to = this.to; 
+		if(this.isValid(from, to) && this.isFound(from, to)) {
+			if(!this.isValid(prev_from, prev_to) || 
+				!this.isFound(prev_from, prev_to) || 
+				this.isDifferent(prev_from, prev_to, from, to)) {
+			    const routingControl = L.Routing.control({}); 
+			    routingControl.getPlan().setWaypoints([
+		        	L.latLng(from[0].y, from[0].x), 
+					L.latLng(to[0].y, to[0].x)
+		        ]); 
+				routingControl.addTo(this.map); 
+				this.from = from; 
+				this.to = to; 
+			}
+		}
 	}
 
-	locationFoundHandler = e => {
-		const currLoc = `${e.latlng.lat}, ${e.latlng.lng}`; 
-		addToCache('Your Location'); 
-		this.setState({ currLoc: currLoc, matches_cache_start: ['Your Location'], matches_cache_end: ['Your Location'] }); 
+	query = (addr) => {
+		let list = [];
+		for(let item in this.cache) {
+			if(item.indexOf(addr) === -1 || list.length > 5) break; 
+			list.push(item); 
+		} 
+		return list; 
+	}
+
+	addToCache = (addr) => {
+		if(addr === '') return; 
+		if(this.cache.length > 10) this.cache.splice(this.cache.length-1, 1); 
+		const idx = this.cache.indexOf(addr); 
+		if(idx >= 0) {
+			this.cache.splice(idx, 1); 
+		}
+		this.cache.unshift(addr); 
+	}
+
+	isValid = (from, to) => {
+		return from !== undefined && to !== undefined; 
+	}
+
+	isFound = (from, to) => {
+		return from.length > 0 && to.length > 0; 
+	}
+
+	isDifferent = (prev_from, prev_to, from, to) => {
+		return JSON.stringify(prev_from[0]) !== JSON.stringify(from[0]) || 
+				JSON.stringify(prev_to[0]) !== JSON.stringify(to[0]); 
 	}
 
 	render() {
 		return (
 			<div className="App">
-				<Map 
-				from={this.state.from} 
-				to={this.state.to} 
-				onLocationFound={this.locationFoundHandler} />
+				<div id='map'></div>
 				<ControlPanel 
 					style={controlPanelStyle} 
 					state={this.state} 
 					addrChangeHandler={this.addrChangeHandler} 
 					selectHandler={this.selectHandler} 
-					getPath={this.getPath} 
-					cache={cache} />
+					getPath={this.addRoutingControl} />
 			</div>
 		);
 	}

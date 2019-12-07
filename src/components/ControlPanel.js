@@ -21,7 +21,7 @@ class ControlPanel extends Component {
 	}
 
 	render() {
-		const { style, state, addrChangeHandler, selectHandler, getPath, cache } = this.props; 
+		const { style, state, addrChangeHandler, selectHandler, getPath } = this.props; 
 		return (
 			<form onSubmit={ getPath } style={style.panel}>
 				<div style={style.content}>
