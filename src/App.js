@@ -7,6 +7,8 @@ import Locate from 'leaflet.locatecontrol';
 import 'leaflet-routing-machine'; 
 
 import './App.css';
+import './leaflet-geosearch.css'; 
+import './leaflet-routing-machine.css'; 
 
 const provider = new OpenStreetMapProvider(); 
 
