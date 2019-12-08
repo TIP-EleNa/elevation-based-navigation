@@ -29,7 +29,8 @@ class App extends Component {
 		this.to = ''; 
 		this.cache = []; 
 
-		this.routingControl = null; 
+		this.marker_from = undefined; 
+		this.marker_to = undefined; 
 
 		this.fromInput = React.createRef(); 
 		this.toInput = React.createRef(); 
@@ -40,9 +41,6 @@ class App extends Component {
 		this.addBaseMap(); 
 		this.addLocateControl(); 
 		this.addSearchControl(); 
-	}
-
-	componentDidUpdate() {
 	}
 
 	initializeMap = () => {
@@ -78,7 +76,7 @@ class App extends Component {
 	}
 
 	locationFoundHandler = e => {
-		const currLoc = `${e.latlng.lat}, ${e.latlng.lng}`; 
+		const currLoc = `${e.latlng.lat} ${e.latlng.lng}`; 
 		this.addToCache('Your Location'); 
 		if(this.state.matches_cache_start.length === 0 && this.state.matches_cache_end.length === 0) {
 			this.setState({ currLoc: currLoc, matches_cache_start: ['Your Location'], matches_cache_end: ['Your Location'] }); 
@@ -126,35 +124,46 @@ class App extends Component {
 		let end = this.state.end.trim().replace(/\s+/g,' '); 
 		let currLoc = this.state.currLoc; 
 
-		if(start === '' || end === '') return; 
-
 		this.addToCache(start); 
 		this.addToCache(end); 
 
 		if(start === 'Your Location') start = currLoc; 
 		if(end === 'Your Location') end = currLoc; 
 		
-		const from = await provider.search({ query: start }); 
-		const to = await provider.search({ query: end }); 
+		const from = start; 
+		const to = end; 
 		const prev_from = this.from; 
 		const prev_to = this.to; 
-		if(this.isFound(from, to)) {
-			if(!this.isValid(prev_from, prev_to) || 
-				!this.isFound(prev_from, prev_to) || 
-				this.isDifferent(prev_from, prev_to, from, to)) {
-			    if(this.routingControl != null) {
-			    	this.map.removeControl(this.routingControl); 
-			    } 
-		    	this.routingControl = L.Routing.control({}); 
-			    this.routingControl.getPlan().setWaypoints([
-		        	L.latLng(from[0].y, from[0].x), 
-					L.latLng(to[0].y, to[0].x)
-		        ]); 
-				this.routingControl.addTo(this.map); 
-				this.from = from; 
-				this.to = to; 
+		if(!this.isDifferent(prev_from, prev_to, from, to)) return; 
+		this.from = from; 
+		this.to = to; 
+
+		let waypoints = await fetch('http://localhost:5000/search', {
+			method: 'POST', 
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json'
+			}, 
+			body: JSON.stringify({origin: start, destination: end})
+		}).then(response => response.json())
+	      .then(data => { return data; })
+	      .catch(error => console.warn(error));
+
+	    this.clearMap(); 
+		let latlngs = []; 
+		for(let i in waypoints) {
+			let waypoint = [waypoints[i].y, waypoints[i].x]
+			if(i == 0) {
+				this.marker_from = new L.Marker(waypoint).bindPopup(`<b>${this.state.start}</b>`); 
+		        this.map.addLayer(this.marker_from);
+			} 
+			if(i == waypoints.length-1) {
+				this.marker_to = new L.Marker(waypoint).bindPopup(`<b>${this.state.end}</b>`); 
+				this.map.addLayer(this.marker_to); 
 			}
+			latlngs.push(L.latLng(waypoint[0], waypoint[1])); 
 		}
+		L.polyline(latlngs, {color: 'red'}).addTo(this.map); 
 	}
 
 	query = (addr) => {
@@ -193,18 +202,26 @@ class App extends Component {
 		}
 	}
 
-	isValid = (from, to) => {
-		return from !== undefined && to !== undefined; 
-	}
-
-	isFound = (from, to) => {
-		return from.length > 0 && to.length > 0; 
-	}
-
 	isDifferent = (prev_from, prev_to, from, to) => {
-		return JSON.stringify(prev_from[0]) !== JSON.stringify(from[0]) || 
-				JSON.stringify(prev_to[0]) !== JSON.stringify(to[0]); 
+		return prev_from !== from || prev_to !== to; 
 	}
+
+	clearMap = () => {
+		if(this.marker_from !== undefined && this.marker_to !== undefined) {
+	    	this.map.removeLayer(this.marker_from); 
+	    	this.map.removeLayer(this.marker_to); 
+	    }
+	    for(let i in this.map._layers) {
+	        if(this.map._layers[i]._path !== undefined) {
+	            try {
+	                this.map.removeLayer(this.map._layers[i]);
+	            }
+	            catch(e) {
+	                console.log("problem with " + e + this.map._layers[i]);
+	            }
+	        }
+	    }
+    }
 
 	render() {
 		return (
