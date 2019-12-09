@@ -137,19 +137,27 @@ class ControlPanel extends Component {
 								return <div key={key} style={style.search_result} onClick={ () => { selectHandler(item.label, 'end'); } }>{item.label}</div>
 							}) : null
 					}
-					<h3 style={{...style.label, marginTop: 30}}>Least Elevation Ratio (%)</h3>
-					<div style={style.input_range}>
-						<Slider
-							onChange={steepChangeHandler}
-							defaultValue={0}
-							getAriaValueText={valuetext}
-							min={0}
-							max={90}
-							step={10}
-							marks
-							valueLabelDisplay="auto"
-				      	/>
-					</div>
+					<h3 style={{...style.label, marginTop: 30, marginBottom: 0}}>Elevation Preference (%)</h3>
+					<table style={{width: "100%"}}>
+						<tbody>
+							<tr>
+								<td style={{width: "10%"}}><h3 style={{...style.label}}>L</h3></td>
+								<td>
+									<Slider
+										onChange={steepChangeHandler}
+										defaultValue={0}
+										getAriaValueText={valuetext}
+										min={0}
+										max={90}
+										step={10}
+										marks
+										valueLabelDisplay="auto"
+							      	/>
+								</td>
+								<td style={{width: "10%"}}><h3 style={{...style.label}}>H</h3></td>
+							</tr>
+						</tbody>
+					</table>
 					<button type='submit' style={style.button_submit} disabled={state.progress}>Search</button>
 				</div>
 			</form>
