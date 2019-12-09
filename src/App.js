@@ -23,6 +23,8 @@ class App extends Component {
 			matches_end: [], 
 			matches_cache_start: [], 
 			matches_cache_end: [], 
+			steep: 0, 
+			progress: false
 		}
 
 		this.from = ''; 
@@ -119,7 +121,7 @@ class App extends Component {
 	addRoutingControl = async (e) => {
 		e.preventDefault(); 
 		this.validateInput(); 
-		
+
 		let start = this.state.start.trim().replace(/\s+/g,' '); 
 		let end = this.state.end.trim().replace(/\s+/g,' '); 
 		let currLoc = this.state.currLoc; 
@@ -138,13 +140,14 @@ class App extends Component {
 		this.from = from; 
 		this.to = to; 
 
+		this.setState({progress: true}); 
 		let waypoints = await fetch('http://localhost:5000/search', {
 			method: 'POST', 
 			headers: {
 				'Accept': 'application/json',
 				'Content-Type': 'application/json'
 			}, 
-			body: JSON.stringify({origin: start, destination: end})
+			body: JSON.stringify({origin: start, destination: end, ratio: this.state.steep})
 		}).then(response => response.json())
 	      .then(data => { return data; })
 	      .catch(error => console.warn(error));
@@ -156,14 +159,21 @@ class App extends Component {
 			if(i == 0) {
 				this.marker_from = new L.Marker(waypoint).bindPopup(`<b>${this.state.start}</b>`); 
 		        this.map.addLayer(this.marker_from);
-			} 
-			if(i == waypoints.length-1) {
+			} else if(i == waypoints.length-1) {
 				this.marker_to = new L.Marker(waypoint).bindPopup(`<b>${this.state.end}</b>`); 
 				this.map.addLayer(this.marker_to); 
+			} else {
+				L.circle(waypoint, {
+					color: 'red',
+				    fillColor: '#f03',
+				    fillOpacity: 0.5,
+				    radius: 20
+				}).addTo(this.map); 
 			}
 			latlngs.push(L.latLng(waypoint[0], waypoint[1])); 
 		}
 		L.polyline(latlngs, {color: 'red'}).addTo(this.map); 
+		this.setState({progress: false}); 
 	}
 
 	query = (addr) => {
@@ -206,6 +216,10 @@ class App extends Component {
 		return prev_from !== from || prev_to !== to; 
 	}
 
+	steepChangeHandler = (e, value) => {
+		this.setState({ steep: Math.floor(value/10)/10 })
+	}
+
 	clearMap = () => {
 		if(this.marker_from !== undefined && this.marker_to !== undefined) {
 	    	this.map.removeLayer(this.marker_from); 
@@ -233,7 +247,9 @@ class App extends Component {
 					selectHandler={this.selectHandler} 
 					getPath={this.addRoutingControl} 
 					fromInput={this.fromInput} 
-					toInput={this.toInput} />
+					toInput={this.toInput} 
+					steepChangeHandler={this.steepChangeHandler} 
+				/>
 			</div>
 		);
 	}

@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 
+import Slider from '@material-ui/core/Slider';
+import LinearProgress from '@material-ui/core/LinearProgress';
+
 const style = {
 	panel: {
 		backgroundColor: "#222930", 
@@ -28,7 +31,8 @@ const style = {
 		fontSize: "14px"
 	}, 
 	input_range: {
-		marginTop: 50
+		marginLeft: 30, 
+		width: '80%'
 	}, 
 	button_submit: {
 		backgroundColor: "#4EB1BA", 
@@ -51,12 +55,16 @@ const style = {
 	}
 }
 
+function valuetext(value) {
+  return `${value}`;
+}
+
 class ControlPanel extends Component {
 	constructor(props) {
 		super(props); 
 		this.state = {
 			focus_from: false, 
-			focus_to: false
+			focus_to: false, 
 		}; 
 	}
 
@@ -72,7 +80,7 @@ class ControlPanel extends Component {
 	}
 
 	render() {
-		const { state, addrChangeHandler, selectHandler, getPath, fromInput, toInput } = this.props; 
+		const { state, addrChangeHandler, selectHandler, getPath, fromInput, toInput, steepChangeHandler } = this.props; 
 		return (
 			<form onSubmit={ getPath } style={style.panel}>
 				<div style={style.content}>
@@ -105,10 +113,26 @@ class ControlPanel extends Component {
 								return <div key={key} style={style.search_result} onClick={ () => { selectHandler(item.label, 'end'); } }>{item.label}</div>
 							}) : null
 					}
+					<h3 style={{...style.label, marginTop: 30}}>Steepness(%)</h3>
 					<div style={style.input_range}>
-						<input type="range" />
+						<Slider
+							onChange={steepChangeHandler}
+							defaultValue={0}
+							getAriaValueText={valuetext}
+							min={0}
+							max={90}
+							step={10}
+							marks
+							valueLabelDisplay="auto"
+				      	/>
 					</div>
-					<button type='submit' style={style.button_submit}>Search</button>
+					<button type='submit' style={style.button_submit} disabled={state.progress}>Search</button>
+					{
+						state.progress ? 
+							<div style={{marginTop: 70}}>
+								<LinearProgress variant="indeterminate" color="secondary" /> 
+							</div> : null
+					}
 				</div>
 			</form>
 		); 
