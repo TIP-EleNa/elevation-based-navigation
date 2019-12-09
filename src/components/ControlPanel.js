@@ -137,7 +137,7 @@ class ControlPanel extends Component {
 								return <div key={key} style={style.search_result} onClick={ () => { selectHandler(item.label, 'end'); } }>{item.label}</div>
 							}) : null
 					}
-					<h3 style={{...style.label, marginTop: 30}}>Steepness(%)</h3>
+					<h3 style={{...style.label, marginTop: 30}}>Least Elevation Ratio (%)</h3>
 					<div style={style.input_range}>
 						<Slider
 							onChange={steepChangeHandler}
