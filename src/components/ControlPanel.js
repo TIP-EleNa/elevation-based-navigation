@@ -11,27 +11,31 @@ const style = {
 		display: "flex", 
 		flexDirection: "row",
 		justifyContent: "center", 
-		width: "30%"
+		width: "30vw", 
+		height: "100vh"
 	}, 
 	content: {
 		width: "90%", 
-		marginTop: 70
+		overflowY:"scroll", 
+		overflowX:"scroll"
 	}, 
 	title: {
 		fontSize: 40, 
-		marginBottom: 70
+		marginBottom: 50
 	}, 
 	label: {
 		textAlign: "left", 
-		marginBottom: 20
+		marginBottom: 20, 
+		fontSize: "16px"
 	}, 
 	input_box: {
 		width: "70%", 
 		fontFamily: "Verdana, Geneva, sans-serif", 
-		fontSize: "14px"
+		fontSize: "14px", 
 	}, 
 	input_range: {
 		marginLeft: 30, 
+		marginBottom: 20, 
 		width: '80%'
 	}, 
 	button_submit: {
@@ -84,7 +88,27 @@ class ControlPanel extends Component {
 		return (
 			<form onSubmit={ getPath } style={style.panel}>
 				<div style={style.content}>
+					<div style={{height: "2%"}}>
+					{
+						state.progress ? 
+							<LinearProgress variant="indeterminate" color="secondary" /> : null
+					}
+					</div>
 					<h1 style={style.title}>EleNa Ultra</h1>
+					<table style={{width: "100%", fontSize: 20, marginBottom: 50}}>
+						<thead>
+							<tr>
+								<th>Distance</th>
+								<th>Elevation</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>{state.route_distance.toFixed(2)}</td>
+								<td>{state.route_elevation.toFixed(2)}</td>
+							</tr>
+						</tbody>
+					</table>
 					<h3 style={style.label}>FROM</h3>
 					<input type="text" style={style.input_box} value={state.start} ref={fromInput} onFocus={() => this.inputFocusHandler('focus_from')} onBlur={() => this.inputBlurHandler('focus_from')} onChange={ e => { addrChangeHandler(e, 'start'); } }/>
 					{
@@ -127,12 +151,6 @@ class ControlPanel extends Component {
 				      	/>
 					</div>
 					<button type='submit' style={style.button_submit} disabled={state.progress}>Search</button>
-					{
-						state.progress ? 
-							<div style={{marginTop: 70}}>
-								<LinearProgress variant="indeterminate" color="secondary" /> 
-							</div> : null
-					}
 				</div>
 			</form>
 		); 

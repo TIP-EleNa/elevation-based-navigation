@@ -24,11 +24,14 @@ class App extends Component {
 			matches_cache_start: [], 
 			matches_cache_end: [], 
 			steep: 0, 
+			route_distance: 0, 
+			route_elevation: 0, 
 			progress: false
 		}
 
 		this.from = ''; 
 		this.to = ''; 
+		this.ratio = undefined; 
 		this.cache = []; 
 
 		this.marker_from = undefined; 
@@ -134,14 +137,17 @@ class App extends Component {
 		
 		const from = start; 
 		const to = end; 
+		const ratio = this.state.steep; 
 		const prev_from = this.from; 
 		const prev_to = this.to; 
-		if(!this.isDifferent(prev_from, prev_to, from, to)) return; 
+		const prev_ratio = this.ratio; 
+		if(!this.isDifferent(prev_from, prev_to, from, to, prev_ratio, ratio)) return; 
 		this.from = from; 
 		this.to = to; 
+		this.ratio = ratio; 
 
 		this.setState({progress: true}); 
-		let waypoints = await fetch('http://localhost:5000/search', {
+		let res = await fetch('http://localhost:5000/search', {
 			method: 'POST', 
 			headers: {
 				'Accept': 'application/json',
@@ -152,6 +158,7 @@ class App extends Component {
 	      .then(data => { return data; })
 	      .catch(error => console.warn(error));
 
+	    let waypoints = res['waypoints']; 
 	    this.clearMap(); 
 		let latlngs = []; 
 		for(let i in waypoints) {
@@ -173,7 +180,7 @@ class App extends Component {
 			latlngs.push(L.latLng(waypoint[0], waypoint[1])); 
 		}
 		L.polyline(latlngs, {color: 'red'}).addTo(this.map); 
-		this.setState({progress: false}); 
+		this.setState({route_distance: res['route_distance'], route_elevation: res['route_elevation'], progress: false}); 
 	}
 
 	query = (addr) => {
@@ -212,8 +219,8 @@ class App extends Component {
 		}
 	}
 
-	isDifferent = (prev_from, prev_to, from, to) => {
-		return prev_from !== from || prev_to !== to; 
+	isDifferent = (prev_from, prev_to, from, to, prev_steep, steep) => {
+		return prev_from !== from || prev_to !== to || prev_steep !== steep; 
 	}
 
 	steepChangeHandler = (e, value) => {
@@ -240,7 +247,7 @@ class App extends Component {
 	render() {
 		return (
 			<div className="App">
-				<div id='map'></div>
+				<div id='map' style={{height: "100vh"}}></div>
 				<ControlPanel 
 					state={this.state} 
 					addrChangeHandler={this.addrChangeHandler} 
