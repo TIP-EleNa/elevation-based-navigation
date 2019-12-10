@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import Slider from '@material-ui/core/Slider';
-import LinearProgress from '@material-ui/core/LinearProgress';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const style = {
 	panel: {
@@ -47,6 +47,11 @@ const style = {
 		cursor: "pointer", 
 		marginTop: 50
 	}, 
+	search_result_list: {
+		position: 'absolute', 
+		zIndex: 1, 
+		width: '100%', 
+	}, 
 	search_result: {
 		background: 'white', 
 		borderStyle: 'solid', 
@@ -88,12 +93,6 @@ class ControlPanel extends Component {
 		return (
 			<form onSubmit={ getPath } style={style.panel}>
 				<div style={style.content}>
-					<div style={{height: "2%"}}>
-					{
-						state.progress ? 
-							<LinearProgress variant="indeterminate" color="secondary" /> : null
-					}
-					</div>
 					<h1 style={style.title}>EleNa Ultra</h1>
 					<table style={{width: "100%", fontSize: 20, marginBottom: 50}}>
 						<thead>
@@ -109,34 +108,39 @@ class ControlPanel extends Component {
 							</tr>
 						</tbody>
 					</table>
+					<div style={{position: 'relative', zIndex: 0}}>
 					<h3 style={style.label}>FROM</h3>
 					<input type="text" style={style.input_box} value={state.start} ref={fromInput} onFocus={() => this.inputFocusHandler('focus_from')} onBlur={() => this.inputBlurHandler('focus_from')} onChange={ e => { addrChangeHandler(e, 'start'); } }/>
-					{
-						this.state.focus_from ? 
-							state.matches_cache_start.map((item, key) => {
-								return <div key={key} style={style.search_result} onClick={ () => { selectHandler(item, 'start'); } }>{item}</div>
-							}) : null
-					}
-					{   
-						this.state.focus_from ? 
-							state.matches_start.map((item, key) => {
-								return <div key={key} style={style.search_result} onClick={ () => { selectHandler(item.label, 'start'); } }>{item.label}</div>
-							}) : null
-					}
+						<div style={style.search_result_list}>
+						{
+							this.state.focus_from ? 
+								state.matches_cache_start.map((item, key) => {
+									return <div key={key} style={style.search_result} onClick={ () => { selectHandler(item, 'start'); } }>{item}</div>
+								}) : null
+						}
+						{   
+							this.state.focus_from ? 
+								state.matches_start.map((item, key) => {
+									return <div key={key} style={style.search_result} onClick={ () => { selectHandler(item.label, 'start'); } }>{item.label}</div>
+								}) : null
+						}
+						</div>
 					<h3 style={style.label}>TO</h3>
 					<input type="text" style={style.input_box} value={state.end} ref={toInput} onFocus={() => this.inputFocusHandler('focus_to')} onBlur={() => this.inputBlurHandler('focus_to')} onChange={ e => { addrChangeHandler(e, 'end'); } }/>
-					{
-						this.state.focus_to ? 
-							state.matches_cache_end.map((item, key) => {
-								return <div key={key} style={style.search_result} onClick={ () => { selectHandler(item, 'end'); } }>{item}</div>
-							}) : null
-					}
-					{
-						this.state.focus_to ? 
-							state.matches_end.map((item, key) => {
-								return <div key={key} style={style.search_result} onClick={ () => { selectHandler(item.label, 'end'); } }>{item.label}</div>
-							}) : null
-					}
+						<div style={style.search_result_list}>
+						{
+							this.state.focus_to ? 
+								state.matches_cache_end.map((item, key) => {
+									return <div key={key} style={style.search_result} onClick={ () => { selectHandler(item, 'end'); } }>{item}</div>
+								}) : null
+						}
+						{
+							this.state.focus_to ? 
+								state.matches_end.map((item, key) => {
+									return <div key={key} style={style.search_result} onClick={ () => { selectHandler(item.label, 'end'); } }>{item.label}</div>
+								}) : null
+						}
+						</div>
 					<h3 style={{...style.label, marginTop: 30, marginBottom: 0}}>Elevation Preference (%)</h3>
 					<table style={{width: "100%"}}>
 						<tbody>
@@ -152,13 +156,21 @@ class ControlPanel extends Component {
 										step={10}
 										marks
 										valueLabelDisplay="auto"
+										zIndex={0}
 							      	/>
 								</td>
 								<td style={{width: "10%"}}><h3 style={{...style.label}}>H</h3></td>
 							</tr>
 						</tbody>
 					</table>
-					<button type='submit' style={style.button_submit} disabled={state.progress}>Search</button>
+					</div>
+					<div style={{marginTop: 30}}>
+					{
+						state.progress ? 
+							<CircularProgress /> : 
+							<button type='submit' style={style.button_submit} disabled={state.progress}>Search</button>
+					}
+					</div>
 				</div>
 			</form>
 		); 

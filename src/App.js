@@ -147,7 +147,7 @@ class App extends Component {
 		this.ratio = ratio; 
 
 		this.setState({progress: true}); 
-		let res = await fetch('https://54.198.122.167/search', {
+		let res = await fetch('http://localhost:5000/search', {
 			method: 'POST', 
 			headers: {
 				'Accept': 'application/json',
