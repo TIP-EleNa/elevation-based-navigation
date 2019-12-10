@@ -103,8 +103,8 @@ class ControlPanel extends Component {
 						</thead>
 						<tbody>
 							<tr>
-								<td>{state.route_distance.toFixed(2)}</td>
-								<td>{state.route_elevation.toFixed(2)}</td>
+								<td>{state.route_distance.toFixed(2)}&nbsp;miles</td>
+								<td>{state.route_elevation.toFixed(2)}&nbsp;feet</td>
 							</tr>
 						</tbody>
 					</table>

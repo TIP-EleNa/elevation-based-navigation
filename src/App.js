@@ -180,6 +180,7 @@ class App extends Component {
 			latlngs.push(L.latLng(waypoint[0], waypoint[1])); 
 		}
 		L.polyline(latlngs, {color: 'red'}).addTo(this.map); 
+		this.map.setView(this.marker_to.getLatLng(), this.map.getZoom()); 
 		this.setState({route_distance: res['route_distance'], route_elevation: res['route_elevation'], progress: false}); 
 	}
 
