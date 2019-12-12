@@ -26,7 +26,8 @@ class App extends Component {
 			steep: 0, 
 			route_distance: 0, 
 			route_elevation: 0, 
-			progress: false
+			progress: false, 
+			error: false
 		}
 
 		this.from = ''; 
@@ -123,7 +124,7 @@ class App extends Component {
 
 	addRoutingControl = async (e) => {
 		e.preventDefault(); 
-		this.validateInput(); 
+		if(!this.validateInput()) return; 
 
 		let start = this.state.start.trim().replace(/\s+/g,' '); 
 		let end = this.state.end.trim().replace(/\s+/g,' '); 
@@ -147,17 +148,30 @@ class App extends Component {
 		this.ratio = ratio; 
 
 		this.setState({progress: true}); 
-		let res = await fetch('http://localhost:5000/search', {
+		let res = await fetch({
+			url: 'http://localhost:5000/search', 
 			method: 'POST', 
 			headers: {
 				'Accept': 'application/json',
 				'Content-Type': 'application/json'
 			}, 
 			body: JSON.stringify({origin: start, destination: end, ratio: this.state.steep})
-		}).then(response => response.json())
+		}).then(response => {
+			if(response.ok) {
+				response.json(); 
+			} else {
+				this.setState({progress: false, error: true}); 
+				throw new Error('Our server is not activated. Contact the owner to start the server. ');
+			}
+		})
 	      .then(data => { return data; })
-	      .catch(error => console.warn(error));
+	      .catch(error => console.error(error));
 
+	    if(res === undefined) {
+	    	console.error(new Error('Our server is not activated. Contact the owner to start the server. ')); 
+	    	this.setState({progress: false, error: true}); 
+			return; 
+	    }
 	    let waypoints = res['waypoints']; 
 	    this.clearMap(); 
 		let latlngs = []; 
@@ -210,14 +224,15 @@ class App extends Component {
 	}
 
 	validateInput = () => {
-		if(this.fromInput.current.value === '') {
+		if(this.state.start === '') {
 			this.fromInput.current.focus(); 
-			return; 
+			return false; 
 		}
-		if(this.toInput.current.value === '') {
+		if(this.state.end === '') {
 			this.toInput.current.focus(); 
-			return; 
+			return false; 
 		}
+		return true; 
 	}
 
 	isDifferent = (prev_from, prev_to, from, to, prev_steep, steep) => {

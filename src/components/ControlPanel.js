@@ -170,6 +170,11 @@ class ControlPanel extends Component {
 							<CircularProgress /> : 
 							<button type='submit' style={style.button_submit} disabled={state.progress}>Search</button>
 					}
+					{
+						state.error ? 
+							<p style={{...style.label, color: 'red'}}>Server is not activated. Please contact the owner to start the server. </p> : 
+							null
+					}
 					</div>
 				</div>
 			</form>
