@@ -148,30 +148,20 @@ class App extends Component {
 		this.ratio = ratio; 
 
 		this.setState({progress: true}); 
-		let res = await fetch({
-			url: 'http://localhost:5000/search', 
-			method: 'POST', 
-			headers: {
-				'Accept': 'application/json',
-				'Content-Type': 'application/json'
-			}, 
-			body: JSON.stringify({origin: start, destination: end, ratio: this.state.steep})
-		}).then(response => {
-			if(response.ok) {
-				response.json(); 
-			} else {
-				this.setState({progress: false, error: true}); 
-				throw new Error('Our server is not activated. Contact the owner to start the server. ');
-			}
-		})
-	      .then(data => { return data; })
-	      .catch(error => console.error(error));
+	 	let res = {}; 
+	 	try {
+	 		let response = await fetch('http://still-caverns-05146.herokuapp.com/search', {
+				method: 'POST', 
+				headers: { 'Content-Type': 'application/json' }, 
+				body: JSON.stringify({origin: start, destination: end, ratio: this.state.steep})
+			}); 
+			res = await response.json(); 
+	 	} catch(e) {
+	 		this.setState({progress: false, error: true}); 
+	 		console.error(e); 
+	 		return; 
+	 	}; 
 
-	    if(res === undefined) {
-	    	console.error(new Error('Our server is not activated. Contact the owner to start the server. ')); 
-	    	this.setState({progress: false, error: true}); 
-			return; 
-	    }
 	    let waypoints = res['waypoints']; 
 	    this.clearMap(); 
 		let latlngs = []; 
