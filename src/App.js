@@ -150,7 +150,7 @@ class App extends Component {
 		this.setState({progress: true}); 
 	 	let res = {}; 
 	 	try {
-	 		let response = await fetch('http://still-caverns-05146.herokuapp.com/search', {
+	 		let response = await fetch('https://still-caverns-05146.herokuapp.com/search', {
 				method: 'POST', 
 				headers: { 'Content-Type': 'application/json' }, 
 				body: JSON.stringify({origin: start, destination: end, ratio: this.state.steep})
