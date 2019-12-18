@@ -147,7 +147,7 @@ class App extends Component {
 		this.to = to; 
 		this.ratio = ratio; 
 
-		this.setState({progress: true}); 
+		this.setState({progress: true, error: false}); 
 	 	let res = {}; 
 	 	try {
 	 		let response = await fetch('https://still-caverns-05146.herokuapp.com/search', {
