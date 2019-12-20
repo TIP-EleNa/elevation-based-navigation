@@ -61,6 +61,16 @@ const style = {
 		margin: '0 auto', 
 		fontSize: "14px", 
 		color: "black"
+	}, 
+	favicon_container: {
+		position: 'relative'
+	}, 
+	favicon: {
+		position: 'absolute', 
+		bottom: 0, 
+		right: 0, 
+		fontSize: 40, 
+		color: '#4EB1BA'
 	}
 }
 
@@ -176,6 +186,9 @@ class ControlPanel extends Component {
 							null
 					}
 					</div>
+				</div>
+				<div style={style.favicon_container}>
+					<a href="https://github.com/TIP-EleNa/elevation-based-navigation" target="_blank" style={style.favicon}><i className="fa fa-github-square" aria-hidden="true"></i></a>
 				</div>
 			</form>
 		); 
