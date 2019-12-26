@@ -1,5 +1,7 @@
 # elevation-based-navigation
 
+![EleNa Ultra](sample.png)
+
 This app is the project from cs520 class at UMass Amherst in Fall, 2019. The goal is to develop a live map web/mobile app that provides users the convenience to find itinerary with the least elevation. It can benefit people especially bikers and disabilities so they can save their effort from climbing. 
 
 ## Getting Started
