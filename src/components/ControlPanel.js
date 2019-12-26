@@ -125,13 +125,13 @@ class ControlPanel extends Component {
 						{
 							this.state.focus_from ? 
 								state.matches_cache_start.map((item, key) => {
-									return <div key={key} style={style.search_result} onClick={ () => { selectHandler(item, 'start'); } }>{item}</div>
+									return <div key={key} style={style.search_result} onClick={ () => { selectHandler('start', item); } }>{item}</div>
 								}) : null
 						}
 						{   
 							this.state.focus_from ? 
 								state.matches_start.map((item, key) => {
-									return <div key={key} style={style.search_result} onClick={ () => { selectHandler(item.label, 'start'); } }>{item.label}</div>
+									return <div key={key} style={style.search_result} onClick={ () => { selectHandler('start', item.label); } }>{item.label}</div>
 								}) : null
 						}
 						</div>
@@ -141,13 +141,13 @@ class ControlPanel extends Component {
 						{
 							this.state.focus_to ? 
 								state.matches_cache_end.map((item, key) => {
-									return <div key={key} style={style.search_result} onClick={ () => { selectHandler(item, 'end'); } }>{item}</div>
+									return <div key={key} style={style.search_result} onClick={ () => { selectHandler('end', item); } }>{item}</div>
 								}) : null
 						}
 						{
 							this.state.focus_to ? 
 								state.matches_end.map((item, key) => {
-									return <div key={key} style={style.search_result} onClick={ () => { selectHandler(item.label, 'end'); } }>{item.label}</div>
+									return <div key={key} style={style.search_result} onClick={ () => { selectHandler('end', item.label); } }>{item.label}</div>
 								}) : null
 						}
 						</div>

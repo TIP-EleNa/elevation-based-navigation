@@ -76,12 +76,12 @@ class App extends Component {
 		  }
 		}
 		const locate = new Locate(options);
-	    this.map.on('locationfound', this.locationFoundHandler); 
+	    this.map.on('locationfound', this.handleLocationFound); 
 	    locate.addTo(this.map);
 	    locate.start()
 	}
 
-	locationFoundHandler = e => {
+	handleLocationFound = e => {
 		const currLoc = `${e.latlng.lat} ${e.latlng.lng}`; 
 		this.addToCache('Your Location'); 
 		if(this.state.matches_cache_start.length === 0 && this.state.matches_cache_end.length === 0) {
@@ -89,7 +89,6 @@ class App extends Component {
 		} else {
 			this.setState({ currLoc: currLoc }); 
 		}
-		
 	}
 
 	addSearchControl = () => {
@@ -97,29 +96,40 @@ class App extends Component {
 		searchControl.addTo(this.map); 
 	}
 
-	addrChangeHandler = (e, c) => {
-		const addr = e.target.value; 
-		const matches = `matches_${c}`; 
-		this.setState({ [c]: addr }, () => {
-			let cl = this.state[c].trim().replace(/\s+/g,' '); 
-			if(cl === '') {
-				this.setState({ [`matches_cache_${c}`]: this.cache, [matches]: [] }); 
+	handleAddressChange = (e, fromOrTo) => {
+		const matches = `matches_${fromOrTo}`; 
+		const matches_cache = `matches_cache_${fromOrTo}`; 
+		this.setState({ [fromOrTo]: e.target.value }, () => {
+			let address = this.state[fromOrTo].trim().replace(/\s+/g,' '); 
+			if(address === '') {
+				this.updateSuggestionList(matches_cache, this.cache, matches, []); 
 			} else {
-				const list_cache = this.query(cl); 
+				const list_cache = this.queryCache(address); 
 				if(list_cache.length > 0) {
-					this.setState({ [`matches_cache_${c}`]: list_cache, [matches]: [] })
+					this.updateSuggestionList(matches_cache, list_cache, matches, []); 
 				} else {
-					provider
-						.search({ query: cl })
-						.then(results => {this.setState({ [`matches_cache_${c}`]: [], [matches]: results }); 
-					})
+					this.queryOSM(address).then(results => { this.updateSuggestionList(matches_cache, [], matches, results) }); 
 				}
 			}
 		})
 	}
 
-	selectHandler = (addr, c) => {
-		this.setState({ [c]: addr }); 
+	updateSuggestionList = (matches_cache, newCacheList, matches, newMatchesList) => {
+		this.setState({ [matches_cache]: newCacheList, [matches]: newMatchesList }); 
+	}
+
+	queryCache = address => {
+		let list = [];
+		for(let i in this.cache) {
+			if(list.length > 5) break; 
+			if(this.cache[i].toLowerCase().indexOf(address.toLowerCase()) === -1) continue; 
+			list.push(this.cache[i]); 
+		} 
+		return list; 
+	}
+
+	queryOSM = address => {
+		return provider.search({ query: address }); 
 	}
 
 	addRoutingControl = async (e) => {
@@ -188,16 +198,6 @@ class App extends Component {
 		this.setState({route_distance: res['route_distance'], route_elevation: res['route_elevation'], progress: false}); 
 	}
 
-	query = (addr) => {
-		let list = [];
-		for(let i in this.cache) {
-			if(list.length > 5) break; 
-			if(this.cache[i].toLowerCase().indexOf(addr.toLowerCase()) === -1) continue; 
-			list.push(this.cache[i]); 
-		} 
-		return list; 
-	}
-
 	addToCache = (addr) => {
 		if(this.cache.length > 10) this.cache.splice(this.cache.length-1, 1); 
 		let idx = -1; 
@@ -250,14 +250,18 @@ class App extends Component {
 	    }
     }
 
+	handleSelect = (fromOrTo, address) => {
+		this.setState({ [fromOrTo]: address }); 
+	}
+
 	render() {
 		return (
 			<div className="App">
 				<div id='map' style={{height: "100vh"}}></div>
 				<ControlPanel 
 					state={this.state} 
-					addrChangeHandler={this.addrChangeHandler} 
-					selectHandler={this.selectHandler} 
+					addrChangeHandler={this.handleAddressChange} 
+					selectHandler={this.handleSelect} 
 					getPath={this.addRoutingControl} 
 					fromInput={this.fromInput} 
 					toInput={this.toInput} 
