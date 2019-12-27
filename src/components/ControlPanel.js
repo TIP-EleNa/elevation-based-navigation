@@ -3,6 +3,9 @@ import React, { Component } from 'react';
 import Slider from '@material-ui/core/Slider';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
+import AddressInput from './AddressInput'; 
+
+
 const style = {
 	panel: {
 		backgroundColor: "#222930", 
@@ -119,60 +122,58 @@ class ControlPanel extends Component {
 						</tbody>
 					</table>
 					<div style={{position: 'relative', zIndex: 0}}>
-					<h3 style={style.label}>FROM</h3>
-					<input type="text" style={style.input_box} value={state.start} ref={fromInput} onFocus={() => this.inputFocusHandler('focus_from')} onBlur={() => this.inputBlurHandler('focus_from')} onChange={ e => { addrChangeHandler(e, 'start'); } }/>
-						<div style={style.search_result_list}>
-						{
-							this.state.focus_from ? 
-								state.matches_cache_start.map((item, key) => {
-									return <div key={key} style={style.search_result} onClick={ () => { selectHandler('start', item); } }>{item}</div>
-								}) : null
-						}
-						{   
-							this.state.focus_from ? 
-								state.matches_start.map((item, key) => {
-									return <div key={key} style={style.search_result} onClick={ () => { selectHandler('start', item.label); } }>{item.label}</div>
-								}) : null
-						}
-						</div>
-					<h3 style={style.label}>TO</h3>
-					<input type="text" style={style.input_box} value={state.end} ref={toInput} onFocus={() => this.inputFocusHandler('focus_to')} onBlur={() => this.inputBlurHandler('focus_to')} onChange={ e => { addrChangeHandler(e, 'end'); } }/>
-						<div style={style.search_result_list}>
-						{
-							this.state.focus_to ? 
-								state.matches_cache_end.map((item, key) => {
-									return <div key={key} style={style.search_result} onClick={ () => { selectHandler('end', item); } }>{item}</div>
-								}) : null
-						}
-						{
-							this.state.focus_to ? 
-								state.matches_end.map((item, key) => {
-									return <div key={key} style={style.search_result} onClick={ () => { selectHandler('end', item.label); } }>{item.label}</div>
-								}) : null
-						}
-						</div>
-					<h3 style={{...style.label, marginTop: 30, marginBottom: 0}}>Elevation Preference (%)</h3>
-					<table style={{width: "100%"}}>
-						<tbody>
-							<tr>
-								<td style={{width: "10%"}}><h3 style={{...style.label}}>L</h3></td>
-								<td>
-									<Slider
-										onChange={steepChangeHandler}
-										defaultValue={0}
-										getAriaValueText={valuetext}
-										min={0}
-										max={90}
-										step={10}
-										marks
-										valueLabelDisplay="auto"
-										zIndex={0}
-							      	/>
-								</td>
-								<td style={{width: "10%"}}><h3 style={{...style.label}}>H</h3></td>
-							</tr>
-						</tbody>
-					</table>
+						<h3 style={style.label}>FROM</h3>
+						<AddressInput 
+							style={style}
+							address={state.start}
+							ref={fromInput}
+							isFocused={this.state.focus_from}
+							focus='focus_from'
+							type='start'
+							matches_cache={state.matches_cache_start}
+							matches={state.matches_start}
+							onFocus={this.inputFocusHandler}
+							onBlur={this.inputBlurHandler}
+							onChange={addrChangeHandler}
+							onSelect={selectHandler}
+						/>
+						<h3 style={style.label}>TO</h3>
+						<AddressInput 
+							style={style}
+							address={state.end}
+							ref={toInput}
+							isFocused={this.state.focus_to}
+							focus='focus_to'
+							type='end'
+							matches_cache={state.matches_cache_end}
+							matches={state.matches_end}
+							onFocus={this.inputFocusHandler}
+							onBlur={this.inputBlurHandler}
+							onChange={addrChangeHandler}
+							onSelect={selectHandler}
+						/>
+						<h3 style={{...style.label, marginTop: 30, marginBottom: 0}}>Elevation Preference (%)</h3>
+						<table style={{width: "100%"}}>
+							<tbody>
+								<tr>
+									<td style={{width: "10%"}}><h3 style={{...style.label}}>L</h3></td>
+									<td>
+										<Slider
+											onChange={steepChangeHandler}
+											defaultValue={0}
+											getAriaValueText={valuetext}
+											min={0}
+											max={90}
+											step={10}
+											marks
+											valueLabelDisplay="auto"
+											zIndex={0}
+								      	/>
+									</td>
+									<td style={{width: "10%"}}><h3 style={{...style.label}}>H</h3></td>
+								</tr>
+							</tbody>
+						</table>
 					</div>
 					<div style={{marginTop: 30}}>
 					{
