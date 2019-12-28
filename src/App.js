@@ -17,8 +17,6 @@ class App extends Component {
 		super(props); 
 		this.state = {
 			currLoc: '', 
-			start: '', 
-			end: '', 
 			matches_start: [], 
 			matches_end: [], 
 			matches_cache_start: [], 
@@ -96,48 +94,12 @@ class App extends Component {
 		searchControl.addTo(this.map); 
 	}
 
-	handleAddressChange = (e, fromOrTo) => {
-		const matches = `matches_${fromOrTo}`; 
-		const matches_cache = `matches_cache_${fromOrTo}`; 
-		this.setState({ [fromOrTo]: e.target.value }, () => {
-			let address = this.state[fromOrTo].trim().replace(/\s+/g,' '); 
-			if(address === '') {
-				this.updateSuggestionList(matches_cache, this.cache, matches, []); 
-			} else {
-				const list_cache = this.queryCache(address); 
-				if(list_cache.length > 0) {
-					this.updateSuggestionList(matches_cache, list_cache, matches, []); 
-				} else {
-					this.queryOSM(address).then(results => { this.updateSuggestionList(matches_cache, [], matches, results) }); 
-				}
-			}
-		})
-	}
-
-	updateSuggestionList = (matches_cache, newCacheList, matches, newMatchesList) => {
-		this.setState({ [matches_cache]: newCacheList, [matches]: newMatchesList }); 
-	}
-
-	queryCache = address => {
-		let list = [];
-		for(let i in this.cache) {
-			if(list.length > 5) break; 
-			if(this.cache[i].toLowerCase().indexOf(address.toLowerCase()) === -1) continue; 
-			list.push(this.cache[i]); 
-		} 
-		return list; 
-	}
-
-	queryOSM = address => {
-		return provider.search({ query: address }); 
-	}
-
 	addRoutingControl = async (e) => {
 		e.preventDefault(); 
 		if(!this.validateInput()) return; 
 
-		let start = this.state.start.trim().replace(/\s+/g,' '); 
-		let end = this.state.end.trim().replace(/\s+/g,' '); 
+		let start = this.fromInput.current.value.trim().replace(/\s+/g,' '); 
+		let end = this.toInput.current.value.trim().replace(/\s+/g,' '); 
 		let currLoc = this.state.currLoc; 
 
 		this.addToCache(start); 
@@ -178,10 +140,10 @@ class App extends Component {
 		for(let i in waypoints) {
 			let waypoint = [waypoints[i].y, waypoints[i].x]
 			if(i == 0) {
-				this.marker_from = new L.Marker(waypoint).bindPopup(`<b>${this.state.start}</b>`); 
+				this.marker_from = new L.Marker(waypoint).bindPopup(`<b>${this.fromInput.current.value}</b>`); 
 		        this.map.addLayer(this.marker_from);
 			} else if(i == waypoints.length-1) {
-				this.marker_to = new L.Marker(waypoint).bindPopup(`<b>${this.state.end}</b>`); 
+				this.marker_to = new L.Marker(waypoint).bindPopup(`<b>${this.toInput.current.value}</b>`); 
 				this.map.addLayer(this.marker_to); 
 			} else {
 				L.circle(waypoint, {
@@ -199,7 +161,7 @@ class App extends Component {
 	}
 
 	addToCache = (addr) => {
-		if(this.cache.length > 10) this.cache.splice(this.cache.length-1, 1); 
+		if(this.cache.length > 10) this.cache.splice(10, this.cache.length); // keep top 10 cache results
 		let idx = -1; 
 		for(let i in this.cache) {
 			if(addr.toLowerCase() === this.cache[i].toLowerCase()) {
@@ -214,11 +176,11 @@ class App extends Component {
 	}
 
 	validateInput = () => {
-		if(this.state.start === '') {
+		if(this.fromInput.current.value === '') {
 			this.fromInput.current.focus(); 
 			return false; 
 		}
-		if(this.state.end === '') {
+		if(this.toInput.current.value === '') {
 			this.toInput.current.focus(); 
 			return false; 
 		}
@@ -250,18 +212,13 @@ class App extends Component {
 	    }
     }
 
-	handleSelect = (fromOrTo, address) => {
-		this.setState({ [fromOrTo]: address }); 
-	}
-
 	render() {
 		return (
 			<div className="App">
 				<div id='map' style={{height: "100vh"}}></div>
 				<ControlPanel 
 					state={this.state} 
-					addrChangeHandler={this.handleAddressChange} 
-					selectHandler={this.handleSelect} 
+					cache={this.cache}
 					getPath={this.addRoutingControl} 
 					fromInput={this.fromInput} 
 					toInput={this.toInput} 

@@ -54,6 +54,15 @@ const style = {
 		right: 0, 
 		fontSize: 40, 
 		color: '#4EB1BA'
+	}, 
+	table: {
+		width: "100%"
+	}, 
+	td: {
+		width: "10%"
+	}, 
+	progress_bar_container: {
+		marginTop: 30
 	}
 }
 
@@ -62,7 +71,7 @@ function valuetext(value) {
 }
 
 function ControlPanel(props) {
-	const { state, addrChangeHandler, selectHandler, getPath, fromInput, toInput, steepChangeHandler } = props; 
+	const { state, cache, getPath, fromInput, toInput, steepChangeHandler } = props; 
 	return (
 		<form onSubmit={ getPath } style={style.panel}>
 			<div style={style.content}>
@@ -81,32 +90,16 @@ function ControlPanel(props) {
 						</tr>
 					</tbody>
 				</table>
-				<div style={{position: 'relative', zIndex: 0}}>
+				<div style={{position: 'relative', zindex: 0}}>
 					<h3 style={style.label}>FROM</h3>
-					<AddressInput 
-						address={state.start}
-						ref={fromInput}
-						type='start'
-						matches_cache={state.matches_cache_start}
-						matches={state.matches_start}
-						onChange={addrChangeHandler}
-						onSelect={selectHandler}
-					/>
+					<AddressInput ref={fromInput} cache={cache} />
 					<h3 style={style.label}>TO</h3>
-					<AddressInput 
-						address={state.end}
-						ref={toInput}
-						type='end'
-						matches_cache={state.matches_cache_end}
-						matches={state.matches_end}
-						onChange={addrChangeHandler}
-						onSelect={selectHandler}
-					/>
+					<AddressInput ref={toInput} cache={cache} />
 					<h3 style={{...style.label, marginTop: 30, marginBottom: 0}}>Elevation Preference (%)</h3>
-					<table style={{width: "100%"}}>
+					<table style={style.table}>
 						<tbody>
 							<tr>
-								<td style={{width: "10%"}}><h3 style={{...style.label}}>L</h3></td>
+								<td style={style.td}><h3 style={style.label}>L</h3></td>
 								<td>
 									<Slider
 										onChange={steepChangeHandler}
@@ -117,15 +110,15 @@ function ControlPanel(props) {
 										step={10}
 										marks
 										valueLabelDisplay="auto"
-										zIndex={0}
+										zindex={0}
 							      	/>
 								</td>
-								<td style={{width: "10%"}}><h3 style={{...style.label}}>H</h3></td>
+								<td style={style.td}><h3 style={{...style.label}}>H</h3></td>
 							</tr>
 						</tbody>
 					</table>
 				</div>
-				<div style={{marginTop: 30}}>
+				<div style={style.progress_bar_container}>
 				{
 					state.progress ? 
 						<CircularProgress /> : 
@@ -139,7 +132,7 @@ function ControlPanel(props) {
 				</div>
 			</div>
 			<div style={style.favicon_container}>
-				<a href="https://github.com/TIP-EleNa/elevation-based-navigation" target="_blank" style={style.favicon}><i className="fa fa-github-square" aria-hidden="true"></i></a>
+				<a href="https://github.com/TIP-EleNa/elevation-based-navigation" target="_blank" rel="noopener noreferrer" style={style.favicon}><i className="fa fa-github-square" aria-hidden="true"></i></a>
 			</div>
 		</form>
 	); 
