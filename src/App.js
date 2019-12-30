@@ -12,6 +12,8 @@ import './leaflet-routing-machine.css';
 
 const provider = new OpenStreetMapProvider(); 
 
+export const AppContext = React.createContext({}); 
+
 class App extends Component {
 	constructor(props) {
 		super(props); 
@@ -214,17 +216,18 @@ class App extends Component {
 
 	render() {
 		return (
-			<div className="App">
-				<div id='map' style={{height: "100vh"}}></div>
-				<ControlPanel 
-					state={this.state} 
-					cache={this.cache}
-					getPath={this.addRoutingControl} 
-					fromInput={this.fromInput} 
-					toInput={this.toInput} 
-					steepChangeHandler={this.steepChangeHandler} 
-				/>
-			</div>
+			<AppContext.Provider value={{ cache: this.cache }}>
+				<div className="App">
+					<div id='map' style={{height: "100vh"}}></div>
+					<ControlPanel 
+						state={this.state} 
+						getPath={this.addRoutingControl} 
+						fromInput={this.fromInput} 
+						toInput={this.toInput} 
+						steepChangeHandler={this.steepChangeHandler} 
+					/>
+				</div>
+			</AppContext.Provider>
 		);
 	}
 }

@@ -71,7 +71,7 @@ function valuetext(value) {
 }
 
 function ControlPanel(props) {
-	const { state, cache, getPath, fromInput, toInput, steepChangeHandler } = props; 
+	const { state, getPath, fromInput, toInput, steepChangeHandler } = props; 
 	return (
 		<form onSubmit={ getPath } style={style.panel}>
 			<div style={style.content}>
@@ -92,9 +92,9 @@ function ControlPanel(props) {
 				</table>
 				<div style={{position: 'relative', zindex: 0}}>
 					<h3 style={style.label}>FROM</h3>
-					<AddressInput ref={fromInput} cache={cache} />
+					<AddressInput ref={fromInput} />
 					<h3 style={style.label}>TO</h3>
-					<AddressInput ref={toInput} cache={cache} />
+					<AddressInput ref={toInput} />
 					<h3 style={{...style.label, marginTop: 30, marginBottom: 0}}>Elevation Preference (%)</h3>
 					<table style={style.table}>
 						<tbody>
