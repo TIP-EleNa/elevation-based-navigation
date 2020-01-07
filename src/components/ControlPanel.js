@@ -5,8 +5,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 
 import AddressInput from './AddressInput'; 
 
-
-const style = {
+const styles = {
 	panel: {
 		backgroundColor: "#222930", 
 		color: "#4EB1BA", 
@@ -70,12 +69,12 @@ function valuetext(value) {
   return `${value}`;
 }
 
-function ControlPanel(props) {
+export default function ControlPanel(props) {
 	const { state, getPath, fromInput, toInput, steepChangeHandler } = props; 
 	return (
-		<form onSubmit={ getPath } style={style.panel}>
-			<div style={style.content}>
-				<h1 style={style.title}>EleNa Ultra</h1>
+		<form onSubmit={ getPath } style={styles.panel}>
+			<div style={styles.content}>
+				<h1 style={styles.title}>EleNa Ultra</h1>
 				<table style={{width: "100%", fontSize: 20, marginBottom: 50}}>
 					<thead>
 						<tr>
@@ -91,15 +90,15 @@ function ControlPanel(props) {
 					</tbody>
 				</table>
 				<div style={{position: 'relative', zindex: 0}}>
-					<h3 style={style.label}>FROM</h3>
+					<h3 style={styles.label}>FROM</h3>
 					<AddressInput ref={fromInput} />
-					<h3 style={style.label}>TO</h3>
+					<h3 style={styles.label}>TO</h3>
 					<AddressInput ref={toInput} />
-					<h3 style={{...style.label, marginTop: 30, marginBottom: 0}}>Elevation Preference (%)</h3>
-					<table style={style.table}>
+					<h3 style={{...styles.label, marginTop: 30, marginBottom: 0}}>Elevation Preference (%)</h3>
+					<table style={styles.table}>
 						<tbody>
 							<tr>
-								<td style={style.td}><h3 style={style.label}>L</h3></td>
+								<td style={styles.td}><h3 style={styles.label}>L</h3></td>
 								<td>
 									<Slider
 										onChange={steepChangeHandler}
@@ -113,29 +112,27 @@ function ControlPanel(props) {
 										zindex={0}
 							      	/>
 								</td>
-								<td style={style.td}><h3 style={{...style.label}}>H</h3></td>
+								<td style={styles.td}><h3 style={{...styles.label}}>H</h3></td>
 							</tr>
 						</tbody>
 					</table>
 				</div>
-				<div style={style.progress_bar_container}>
+				<div style={styles.progress_bar_container}>
 				{
 					state.progress ? 
 						<CircularProgress /> : 
-						<button type='submit' style={style.button_submit} disabled={state.progress}>Search</button>
+						<button type='submit' style={styles.button_submit} disabled={state.progress}>Search</button>
 				}
 				{
 					state.error ? 
-						<p style={{...style.label, color: 'red'}}>Server is not activated. Please contact the owner to start the server. </p> : 
+						<p style={{...styles.label, color: 'red'}}>Server is not activated. Please contact the owner to start the server. </p> : 
 						null
 				}
 				</div>
 			</div>
-			<div style={style.favicon_container}>
-				<a href="https://github.com/TIP-EleNa/elevation-based-navigation" target="_blank" rel="noopener noreferrer" style={style.favicon}><i className="fa fa-github-square" aria-hidden="true"></i></a>
+			<div style={styles.favicon_container}>
+				<a href="https://github.com/TIP-EleNa/elevation-based-navigation" target="_blank" rel="noopener noreferrer" style={styles.favicon}><i className="fa fa-github-square" aria-hidden="true"></i></a>
 			</div>
 		</form>
 	); 
 }
-
-export default ControlPanel; 

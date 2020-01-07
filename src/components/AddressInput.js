@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import SuggestionList from './SuggestionList'; 
 
-const style = {
+const styles = {
 	input_box: {
 		width: "70%", 
 		fontFamily: "Verdana, Geneva, sans-serif", 
@@ -18,7 +18,7 @@ const AddressInput = React.forwardRef((props, ref) => {
 		<div>
 			<input 
 				type="text" 
-				style={style.input_box} 
+				style={styles.input_box} 
 				value={address} 
 				ref={ref} 
 				onFocus={() => handleFocus()} 
